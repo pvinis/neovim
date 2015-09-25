@@ -166,18 +166,18 @@ getcmdline (
   linenr_T old_topline;
   int old_topfill;
   linenr_T old_botline;
-  int did_incsearch = FALSE;
-  int incsearch_postponed = FALSE;
-  int did_wild_list = FALSE;            /* did wild_list() recently */
+  bool did_incsearch = false;
+  bool incsearch_postponed = false;
+  bool did_wild_list = false;            /* did wild_list() recently */
   int wim_index = 0;                    /* index in wim_flags[] */
   int res;
-  int save_msg_scroll = msg_scroll;
+  bool save_msg_scroll = msg_scroll;
   int save_State = State;               /* remember State when called */
-  int some_key_typed = FALSE;           /* one of the keys was typed */
+  bool some_key_typed = false;           /* one of the keys was typed */
   /* mouse drag and release events are ignored, unless they are
    * preceded with a mouse down event */
-  int ignore_drag_release = TRUE;
-  int break_ctrl_c = FALSE;
+  bool ignore_drag_release = true;
+  bool break_ctrl_c = false;
   expand_T xpc;
   long        *b_im_ptr = NULL;
   /* Everything that may work recursively should save and restore the
@@ -233,7 +233,7 @@ getcmdline (
   redir_off = TRUE;             /* don't redirect the typed command */
   if (!cmd_silent) {
     i = msg_scrolled;
-    msg_scrolled = 0;                   /* avoid wait_return message */
+    msg_scrolled = false;                   /* avoid wait_return message */
     gotocmdline(TRUE);
     msg_scrolled += i;
     redrawcmdprompt();                  /* draw prompt or indent */
@@ -255,7 +255,7 @@ getcmdline (
    * Avoid scrolling when called by a recursive do_cmdline(), e.g. when
    * doing ":@0" when register 0 doesn't contain a CR.
    */
-  msg_scroll = FALSE;
+  msg_scroll = false;
 
   State = CMDLINE;
 
@@ -1422,7 +1422,7 @@ cmdline_changed:
       validate_cursor();
       /* May redraw the status line to show the cursor position. */
       if (p_ru && curwin->w_status_height > 0)
-        curwin->w_redr_status = TRUE;
+        curwin->w_redr_status = true;
 
       save_cmdline(&save_ccline);
       update_screen(SOME_VALID);
@@ -2318,7 +2318,7 @@ void restore_cmdline_alloc(char_u *p)
  *
  * return FAIL for failure, OK otherwise
  */
-static int 
+static int
 cmdline_paste (
     int regname,
     int literally,          /* Insert text literally instead of "as typed" */
@@ -2498,7 +2498,7 @@ void redrawcmd(void)
    * An emsg() before may have set msg_scroll. This is used in normal mode,
    * in cmdline mode we can reset them now.
    */
-  msg_scroll = FALSE;           /* next message overwrites cmdline */
+  msg_scroll = false;           /* next message overwrites cmdline */
 
   /* Typing ':' at the more prompt may set skip_redraw.  We don't want this
    * in cmdline mode */
@@ -2576,7 +2576,7 @@ static int sort_func_compare(const void *s1, const void *s2)
  * For the caller, this means that the character is just passed through like a
  * normal character (instead of being expanded).  This allows :s/^I^D etc.
  */
-static int 
+static int
 nextwild (
     expand_T *xp,
     int type,
@@ -3448,7 +3448,7 @@ static void set_expand_context(expand_T *xp)
   set_cmd_context(xp, ccline.cmdbuff, ccline.cmdlen, ccline.cmdpos);
 }
 
-void 
+void
 set_cmd_context (
     expand_T *xp,
     char_u *str,           /* start of command line */
@@ -3498,7 +3498,7 @@ set_cmd_context (
  * key that triggered expansion literally.
  * Returns EXPAND_OK otherwise.
  */
-int 
+int
 expand_cmdline (
     expand_T *xp,
     char_u *str,               /* start of command line */
@@ -3564,7 +3564,7 @@ static void cleanup_help_tags(int num_file, char_u **file)
 /*
  * Do the expansion based on xp->xp_context and "pat".
  */
-static int 
+static int
 ExpandFromContext (
     expand_T *xp,
     char_u *pat,
@@ -4264,7 +4264,7 @@ static void clear_hist_entry(histentry_T *hisptr)
  * Check if command line 'str' is already in history.
  * If 'move_to_front' is TRUE, matching entry is moved to end of history.
  */
-static int 
+static int
 in_history (
     int type,
     char_u *str,
@@ -4346,7 +4346,7 @@ static int last_maptick = -1;           /* last seen maptick */
  * history then it is moved to the front.  "histype" may be one of he HIST_
  * values.
  */
-void 
+void
 add_to_history (
     int histype,
     char_u *new_entry,
@@ -4774,7 +4774,7 @@ static int viminfo_add_at_front = FALSE;
 /*
  * Translate a history type number to the associated character.
  */
-static int 
+static int
 hist_type2char (
     int type,
     int use_question                   /* use '?' instead of '/' */
@@ -5119,7 +5119,7 @@ static int ex_window(void)
           i = 0;
         if (history[histtype][i].hisstr != NULL)
           ml_append(lnum++, history[histtype][i].hisstr,
-              (colnr_T)0, FALSE);
+              (colnr_T)0, false);
       } while (i != hisidx[histtype]);
     }
   }
@@ -5229,12 +5229,12 @@ static int ex_window(void)
     wp = curwin;
     bp = curbuf;
     win_goto(old_curwin);
-    win_close(wp, TRUE);
+    win_close(wp, true);
 
     /* win_close() may have already wiped the buffer when 'bh' is
      * set to 'wipe' */
     if (buf_valid(bp))
-      close_buffer(NULL, bp, DOBUF_WIPE, FALSE);
+      close_buffer(NULL, bp, DOBUF_WIPE, false);
 
     /* Restore window sizes. */
     win_size_restore(&winsizes);

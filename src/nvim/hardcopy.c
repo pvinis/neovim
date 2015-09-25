@@ -49,7 +49,7 @@
  * To implement printing on a platform, the following functions must be
  * defined:
  *
- * int mch_print_init(prt_settings_T *psettings, char_u *jobname, int forceit)
+ * int mch_print_init(prt_settings_T *psettings, char_u *jobname, bool forceit)
  * Called once.  Code should display printer dialogue (if appropriate) and
  * determine printer font and margin settings.  Reset has_color if the printer
  * doesn't support colors at all.
@@ -2087,7 +2087,7 @@ static int prt_match_charset(char *p_charset, struct prt_ps_mbfont_S *p_cmap, st
   return FALSE;
 }
 
-int mch_print_init(prt_settings_T *psettings, char_u *jobname, int forceit)
+int mch_print_init(prt_settings_T *psettings, char_u *jobname, bool forceit)
 {
   int i;
   char        *paper_name;

@@ -208,12 +208,12 @@ static void restore_dbg_stuff(struct dbg_stuff *dsp)
  * do_exmode(): Repeatedly get commands for the "Ex" mode, until the ":vi"
  * command is given.
  */
-void 
+void
 do_exmode (
     int improved                       /* TRUE for "improved Ex" mode */
 )
 {
-  int save_msg_scroll;
+  bool save_msg_scroll;
   int prev_msg_row;
   linenr_T prev_line;
   int changedtick;
@@ -240,7 +240,7 @@ do_exmode (
       exmode_active = FALSE;
       break;
     }
-    msg_scroll = TRUE;
+    msg_scroll = true;
     need_wait_return = FALSE;
     ex_pressedreturn = FALSE;
     ex_no_reprint = FALSE;
@@ -592,7 +592,7 @@ int do_cmdline(char_u *cmdline, LineGetter fgetline,
         msg_didout_before_start = msg_didout;
         msg_didany = FALSE;         /* no output yet */
         msg_start();
-        msg_scroll = TRUE;          /* put messages below each other */
+        msg_scroll = true;          /* put messages below each other */
         ++no_wait_return;           /* don't wait for return until finished */
         ++RedrawingDisabled;
         did_inc = TRUE;
@@ -948,7 +948,7 @@ int do_cmdline(char_u *cmdline, LineGetter fgetline,
   if (did_inc) {
     --RedrawingDisabled;
     --no_wait_return;
-    msg_scroll = FALSE;
+    msg_scroll = false;
 
     /*
      * When just finished an ":if"-":else" which was typed, no need to
@@ -1256,7 +1256,7 @@ static char_u * do_one_cmd(char_u **cmdlinep,
   char_u              *errormsg = NULL;         /* error message */
   exarg_T ea;                                   /* Ex command arguments */
   long verbose_save = -1;
-  int save_msg_scroll = msg_scroll;
+  bool save_msg_scroll = msg_scroll;
   int save_msg_silent = -1;
   int did_esilent = 0;
   int did_sandbox = FALSE;
@@ -1747,9 +1747,9 @@ static char_u * do_one_cmd(char_u **cmdlinep,
   if (*p == '!' && ea.cmdidx != CMD_substitute
       && ea.cmdidx != CMD_smagic && ea.cmdidx != CMD_snomagic) {
     ++p;
-    ea.forceit = TRUE;
+    ea.forceit = true;
   } else
-    ea.forceit = FALSE;
+    ea.forceit = false;
 
   /*
    * 6. Parse arguments.
@@ -1887,11 +1887,11 @@ static char_u * do_one_cmd(char_u **cmdlinep,
 
   if (ea.cmdidx == CMD_read) {
     if (ea.forceit) {
-      ea.usefilter = TRUE;                      /* :r! filter if ea.forceit */
-      ea.forceit = FALSE;
+      ea.usefilter = true;                      /* :r! filter if ea.forceit */
+      ea.forceit = false;
     } else if (*ea.arg == '!') {              /* :r !filter */
       ++ea.arg;
-      ea.usefilter = TRUE;
+      ea.usefilter = true;
     }
   }
 
@@ -2278,7 +2278,7 @@ doend:
  * Check for an Ex command with optional tail.
  * If there is a match advance "pp" to the argument and return TRUE.
  */
-int 
+int
 checkforcmd (
     char_u **pp,               /* start of command */
     char *cmd,               /* name of command */
@@ -2626,8 +2626,8 @@ set_one_cmd_context (
   exarg_T ea;
   int                 compl = EXPAND_NOTHING;
   int delim;
-  int forceit = FALSE;
-  int usefilter = FALSE;                    /* filter instead of file name */
+  bool forceit = false;
+  bool usefilter = false;                    /* filter instead of file name */
 
   ExpandInit(xp);
   xp->xp_pattern = buff;
@@ -2736,7 +2736,7 @@ set_one_cmd_context (
   xp->xp_context = EXPAND_NOTHING;   /* Default now that we're past command */
 
   if (*p == '!') {                  /* forced commands */
-    forceit = TRUE;
+    forceit = true;
     ++p;
   }
 
@@ -4459,10 +4459,10 @@ char_u *check_nextcmd(char_u *p)
  *    return FAIL and give error message if 'message' TRUE
  * return OK otherwise
  */
-static int 
+static int
 check_more (
     int message,                /* when FALSE check only, no messages */
-    int forceit
+    bool forceit
 )
 {
   int n = ARGCOUNT - curwin->w_arg_idx - 1;
@@ -4515,7 +4515,7 @@ static int uc_add_command(char_u *name, size_t name_len, char_u *rep,
   char_u      *rep_buf = NULL;
   garray_T    *gap;
 
-  replace_termcodes(rep, &rep_buf, FALSE, FALSE, FALSE);
+  replace_termcodes(rep, &rep_buf, false, false, false);
   if (rep_buf == NULL) {
     /* Can't replace termcodes - try using the string as is */
     rep_buf = vim_strsave(rep);
@@ -5110,7 +5110,7 @@ static char_u *uc_split_args(char_u *arg, size_t *lenp)
  * Returns the length of the replacement, which has been added to "buf".
  * Returns -1 if there was no match, and only the "<" has been copied.
  */
-static size_t 
+static size_t
 uc_check_code (
     char_u *code,
     size_t len,
@@ -5568,7 +5568,7 @@ static void ex_highlight(exarg_T *eap)
 {
   if (*eap->arg == NUL && eap->cmd[2] == '!')
     MSG(_("Greetings, Vim user!"));
-  do_highlight(eap->arg, eap->forceit, FALSE);
+  do_highlight(eap->arg, eap->forceit, false);
 }
 
 
@@ -5719,9 +5719,9 @@ static void ex_pclose(exarg_T *eap)
  * Close window "win" and take care of handling closing the last window for a
  * modified buffer.
  */
-static void 
+static void
 ex_win_close (
-    int forceit,
+    bool forceit,
     win_T *win,
     tabpage_T *tp                /* NULL or the tab page "win" is in */
 )
@@ -5817,7 +5817,7 @@ static void ex_tabonly(exarg_T *eap)
 /*
  * Close the current tab page.
  */
-void tabpage_close(int forceit)
+void tabpage_close(bool forceit)
 {
   /* First close all the windows but the current one.  If that worked then
    * close the last window in this tab, that will close it. */
@@ -5833,7 +5833,7 @@ void tabpage_close(int forceit)
  * Also takes care of the tab pages line disappearing when closing the
  * last-but-one tab page.
  */
-void tabpage_close_other(tabpage_T *tp, int forceit)
+void tabpage_close_other(tabpage_T *tp, bool forceit)
 {
   int done = 0;
   win_T       *wp;
@@ -6124,7 +6124,7 @@ void alist_set(alist_T *al, int count, char_u **files, int use_curbuf, int *fnum
  * Add file "fname" to argument list "al".
  * "fname" must have been allocated and "al" must have been checked for room.
  */
-void 
+void
 alist_add (
     alist_T *al,
     char_u *fname,
@@ -6249,7 +6249,7 @@ void ex_splitview(exarg_T *eap)
     if (win_new_tabpage(cmdmod.tab != 0 ? cmdmod.tab
             : eap->addr_count == 0 ? 0
             : (int)eap->line2 + 1) != FAIL) {
-      apply_autocmds(EVENT_TABNEW, eap->arg, eap->arg,  FALSE, curbuf); 
+      apply_autocmds(EVENT_TABNEW, eap->arg, eap->arg,  FALSE, curbuf);
       do_exedit(eap, old_curwin);
       apply_autocmds(EVENT_TABNEWENTERED, NULL, NULL, FALSE, curbuf);
 
@@ -6358,7 +6358,7 @@ static void ex_tabs(exarg_T *eap)
   int tabcount = 1;
 
   msg_start();
-  msg_scroll = TRUE;
+  msg_scroll = true;
 
   FOR_ALL_TABS(tp) {
     if (got_int) {
@@ -6510,7 +6510,7 @@ static void ex_edit(exarg_T *eap)
 /*
  * ":edit <file>" command and alikes.
  */
-void 
+void
 do_exedit (
     exarg_T *eap,
     win_T *old_curwin            /* curwin before doing a split or NULL */
@@ -6530,7 +6530,7 @@ do_exedit (
       if (global_busy) {
         int rd = RedrawingDisabled;
         int nwr = no_wait_return;
-        int ms = msg_scroll;
+        bool ms = msg_scroll;
 
         if (eap->nextcmd != NULL) {
           stuffReadbuff(eap->nextcmd);
@@ -6540,7 +6540,7 @@ do_exedit (
         RedrawingDisabled = 0;
         no_wait_return = 0;
         need_wait_return = FALSE;
-        msg_scroll = 0;
+        msg_scroll = false;
         must_redraw = CLEAR;
 
         main_loop(FALSE, TRUE);
@@ -6707,7 +6707,7 @@ static void ex_syncbind(exarg_T *eap)
       curwin->w_scbind_pos = topline;
       redraw_later(VALID);
       cursor_correct();
-      curwin->w_redr_status = TRUE;
+      curwin->w_redr_status = true;
     }
   }
   curwin = save_curwin;
@@ -7049,7 +7049,7 @@ static void ex_put(exarg_T *eap)
   /* ":0put" works like ":1put!". */
   if (eap->line2 == 0) {
     eap->line2 = 1;
-    eap->forceit = TRUE;
+    eap->forceit = true;
   }
   curwin->w_cursor.lnum = eap->line2;
   do_put(eap->regname, NULL, eap->forceit ? BACKWARD : FORWARD, 1L,
@@ -7416,7 +7416,7 @@ static void ex_mkrc(exarg_T *eap)
   if (eap->cmdidx == CMD_mkview
       && (*eap->arg == NUL
           || (ascii_isdigit(*eap->arg) && eap->arg[1] == NUL))) {
-    eap->forceit = TRUE;
+    eap->forceit = true;
     fname = (char_u *)get_view_file(*eap->arg);
     if (fname == NULL)
       return;
@@ -7562,7 +7562,7 @@ int vim_mkdir_emsg(char_u *name, int prot)
 FILE *
 open_exfile (
     char_u *fname,
-    int forceit,
+    bool forceit,
     char *mode          /* "w" for create new file or "a" for append */
 )
 {
@@ -7628,7 +7628,7 @@ static void ex_normal(exarg_T *eap)
     EMSG("Can't re-enter normal mode from terminal mode");
     return;
   }
-  int save_msg_scroll = msg_scroll;
+  bool save_msg_scroll = msg_scroll;
   int save_restart_edit = restart_edit;
   int save_msg_didout = msg_didout;
   int save_State = State;
@@ -7650,7 +7650,7 @@ static void ex_normal(exarg_T *eap)
   }
   ++ex_normal_busy;
 
-  msg_scroll = FALSE;       /* no msg scrolling in Normal mode */
+  msg_scroll = false;       /* no msg scrolling in Normal mode */
   restart_edit = 0;         /* don't go to Insert mode */
   p_im = FALSE;             /* don't use 'insertmode' */
 
@@ -8347,7 +8347,7 @@ char_u *expand_sfile(char_u *arg)
  * Write openfile commands for the current buffers to an .exrc file.
  * Return FAIL on error, OK otherwise.
  */
-static int 
+static int
 makeopens (
     FILE *fd,
     char_u *dirnow            /* Current directory name */
@@ -8771,7 +8771,7 @@ static int ses_do_win(win_T *wp)
  * Write commands to "fd" to restore the view of a window.
  * Caller must make sure 'scrolloff' is zero.
  */
-static int 
+static int
 put_view (
     FILE *fd,
     win_T *wp,
@@ -8952,7 +8952,7 @@ put_view (
  * Write an argument list to the session file.
  * Returns FAIL if writing fails.
  */
-static int 
+static int
 ses_arglist (
     FILE *fd,
     char *cmd,
@@ -9384,7 +9384,7 @@ static void ex_fold(exarg_T *eap)
 static void ex_foldopen(exarg_T *eap)
 {
   opFoldRange(eap->line1, eap->line2, eap->cmdidx == CMD_foldopen,
-      eap->forceit, FALSE);
+      eap->forceit, false);
 }
 
 static void ex_folddo(exarg_T *eap)
@@ -9419,7 +9419,7 @@ static void ex_terminal(exarg_T *eap)
   char ex_cmd[512];
   snprintf(ex_cmd, sizeof(ex_cmd),
            ":enew%s | call termopen(%s%s%s) | startinsert",
-           eap->forceit==TRUE ? "!" : "", lquote, name, rquote);
+           eap->forceit ? "!" : "", lquote, name, rquote);
   do_cmdline_cmd(ex_cmd);
 
   if (name != (char *)p_sh) {

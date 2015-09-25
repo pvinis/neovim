@@ -1642,7 +1642,7 @@ static void mb_adjust_opend(oparg_T *oap)
  */
 static inline void pchar(pos_T lp, int c)
 {
-    *(ml_get_buf(curbuf, lp.lnum, TRUE) + lp.col) = c;;
+    *(ml_get_buf(curbuf, lp.lnum, true) + lp.col) = c;;
 }
 
 /*
@@ -1756,7 +1756,7 @@ int op_replace(oparg_T *oap, int c)
       /* replace the line */
       ml_replace(curwin->w_cursor.lnum, newp, FALSE);
       if (after_p != NULL) {
-        ml_append(curwin->w_cursor.lnum++, after_p, 0, FALSE);
+        ml_append(curwin->w_cursor.lnum++, after_p, 0, false);
         appended_lines_mark(curwin->w_cursor.lnum, 1L);
         oap->end.lnum++;
         xfree(after_p);
@@ -2685,7 +2685,7 @@ void do_put(int regname, yankreg_T *reg, int dir, long count, int flags)
       if (u_save_cursor() == FAIL)
         goto end;
       ptr = vim_strsave(get_cursor_pos_ptr());
-      ml_append(curwin->w_cursor.lnum, ptr, (colnr_T)0, FALSE);
+      ml_append(curwin->w_cursor.lnum, ptr, (colnr_T)0, false);
       xfree(ptr);
 
       ptr = vim_strnsave(get_cursor_line_ptr(), curwin->w_cursor.col);
@@ -2809,7 +2809,7 @@ void do_put(int regname, yankreg_T *reg, int dir, long count, int flags)
       /* add a new line */
       if (curwin->w_cursor.lnum > curbuf->b_ml.ml_line_count) {
         if (ml_append(curbuf->b_ml.ml_line_count, (char_u *)"",
-                (colnr_T)1, FALSE) == FAIL)
+                (colnr_T)1, false) == FAIL)
           break;
         ++nr_lines;
       }
@@ -2999,7 +2999,7 @@ void do_put(int regname, yankreg_T *reg, int dir, long count, int flags)
           STRCPY(newp, y_array[y_size - 1]);
           STRCAT(newp, ptr);
           /* insert second line */
-          ml_append(lnum, newp, (colnr_T)0, FALSE);
+          ml_append(lnum, newp, (colnr_T)0, false);
           xfree(newp);
 
           oldp = ml_get(lnum);
@@ -3016,7 +3016,7 @@ void do_put(int regname, yankreg_T *reg, int dir, long count, int flags)
 
         for (; i < y_size; i++) {
           if ((y_type != MCHAR || i < y_size - 1)
-              && ml_append(lnum, y_array[i], (colnr_T)0, FALSE)
+              && ml_append(lnum, y_array[i], (colnr_T)0, false)
               == FAIL)
             goto error;
           lnum++;
@@ -4428,7 +4428,7 @@ int do_addsub(int command, linenr_T Prenum1)
   }
   --curwin->w_cursor.col;
   curwin->w_set_curswant = TRUE;
-  ptr = ml_get_buf(curbuf, curwin->w_cursor.lnum, TRUE);
+  ptr = ml_get_buf(curbuf, curwin->w_cursor.lnum, true);
   RLADDSUBFIX(ptr);
   return OK;
 }

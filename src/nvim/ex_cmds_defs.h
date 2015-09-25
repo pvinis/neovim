@@ -19,8 +19,8 @@
 
 /*
  * When adding an Ex command:
- * 1. Add an entry to the table in src/nvim/ex_cmds.lua.  Keep it sorted on the 
- *    shortest version of the command name that works.  If it doesn't start with 
+ * 1. Add an entry to the table in src/nvim/ex_cmds.lua.  Keep it sorted on the
+ *    shortest version of the command name that works.  If it doesn't start with
  *    a lower case letter, add it at the end.
  *
  *    Each table entry is a table with the following keys:
@@ -32,7 +32,7 @@
  *      flags   | A set of the flags from below list joined by bitwise or.
  *      func    | Name of the function containing the implementation.
  *
- *    Referenced function should be either non-static one or defined in 
+ *    Referenced function should be either non-static one or defined in
  *    ex_docmd.c and be coercible to ex_func_T type from below.
  *
  *    All keys not described in the above table are reserved for future use.
@@ -107,7 +107,7 @@ struct exarg {
   cmdidx_T cmdidx;              ///< the index for the command
   uint32_t argt;                ///< flags for the command
   int skip;                     ///< don't execute the command, only parse it
-  int forceit;                  ///< TRUE if ! present
+  bool forceit;					///< true if ! present
   int addr_count;               ///< the number of addresses given
   linenr_T line1;               ///< the first line number
   linenr_T line2;               ///< the second line number or count

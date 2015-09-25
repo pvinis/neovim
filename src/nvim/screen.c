@@ -327,7 +327,7 @@ void update_screen(int type)
             wp->w_redr_type = NOT_VALID;
             if (wp->w_winrow + wp->w_height + wp->w_status_height
                 <= msg_scrolled) {
-              wp->w_redr_status = TRUE;
+              wp->w_redr_status = true;
             }
           }
         }
@@ -335,7 +335,7 @@ void update_screen(int type)
       redraw_cmdline = TRUE;
       redraw_tabline = TRUE;
     }
-    msg_scrolled = 0;
+    msg_scrolled = false;
     need_wait_return = FALSE;
   }
 
@@ -658,7 +658,7 @@ static void win_update(win_T *wp)
   type = wp->w_redr_type;
 
   if (type == NOT_VALID) {
-    wp->w_redr_status = TRUE;
+    wp->w_redr_status = true;
     wp->w_lines_valid = 0;
   }
 
@@ -1926,7 +1926,7 @@ static void fold_line(win_T *wp, long fold_count, foldinfo_T *foldinfo, linenr_T
                     || (lnume == bot->lnum
                         && (bot->col - (*p_sel == 'e'))
                         >= (colnr_T)STRLEN(ml_get_buf(wp->w_buffer, lnume,
-                                FALSE))))))) {
+                                false))))))) {
       if (VIsual_mode == Ctrl_V) {
         /* Visual block mode: highlight the chars part of the block */
         if (wp->w_old_cursor_fcol + txtcol < (colnr_T)wp->w_width) {
@@ -2248,7 +2248,7 @@ win_line (
      * Trick: skip a few chars for C/shell/Vim comments */
     nextline[SPWORDLEN] = NUL;
     if (lnum < wp->w_buffer->b_ml.ml_line_count) {
-      line = ml_get_buf(wp->w_buffer, lnum + 1, FALSE);
+      line = ml_get_buf(wp->w_buffer, lnum + 1, false);
       spell_cat_line(nextline + SPWORDLEN, line, SPWORDLEN);
     }
 
@@ -2385,7 +2385,7 @@ win_line (
   if (line_attr != 0)
     area_highlighting = TRUE;
 
-  line = ml_get_buf(wp->w_buffer, lnum, FALSE);
+  line = ml_get_buf(wp->w_buffer, lnum, false);
   ptr = line;
 
   if (has_spell) {
@@ -2495,7 +2495,7 @@ win_line (
       len = spell_move_to(wp, FORWARD, TRUE, TRUE, &spell_hlf);
 
       /* spell_move_to() may call ml_get() and make "line" invalid */
-      line = ml_get_buf(wp->w_buffer, lnum, FALSE);
+      line = ml_get_buf(wp->w_buffer, lnum, false);
       ptr = line + linecol;
 
       if (len == 0 || (int)wp->w_cursor.col > ptr - line) {
@@ -2750,7 +2750,7 @@ win_line (
           }
           p_extra = NULL;
           c_extra = ' ';
-          n_extra = get_breakindent_win(wp, ml_get_buf(wp->w_buffer, lnum, FALSE));
+          n_extra = get_breakindent_win(wp, ml_get_buf(wp->w_buffer, lnum, false));
           /* Correct end of highlighted area for 'breakindent',
              required wen 'linebreak' is also set. */
           if (tocol == vcol)
@@ -2878,7 +2878,7 @@ win_line (
 
               /* Need to get the line again, a multi-line regexp
                * may have made it invalid. */
-              line = ml_get_buf(wp->w_buffer, lnum, FALSE);
+              line = ml_get_buf(wp->w_buffer, lnum, false);
               ptr = line + v;
 
               if (shl->lnum == lnum) {
@@ -3230,7 +3230,7 @@ win_line (
 
           /* Need to get the line again, a multi-line regexp may
            * have made it invalid. */
-          line = ml_get_buf(wp->w_buffer, lnum, FALSE);
+          line = ml_get_buf(wp->w_buffer, lnum, false);
           ptr = line + v;
 
           if (!attr_pri)
@@ -4455,7 +4455,7 @@ void status_redraw_all(void)
 
   FOR_ALL_WINDOWS_IN_TAB(wp, curtab) {
     if (wp->w_status_height) {
-      wp->w_redr_status = TRUE;
+      wp->w_redr_status = true;
       redraw_later(VALID);
     }
   }
@@ -4468,7 +4468,7 @@ void status_redraw_curbuf(void)
 {
   FOR_ALL_WINDOWS_IN_TAB(wp, curtab) {
     if (wp->w_status_height != 0 && wp->w_buffer == curbuf) {
-      wp->w_redr_status = TRUE;
+      wp->w_redr_status = true;
       redraw_later(VALID);
     }
   }
@@ -4494,7 +4494,7 @@ void redraw_statuslines(void)
 void win_redraw_last_status(frame_T *frp)
 {
   if (frp->fr_layout == FR_LEAF)
-    frp->fr_win->w_redr_status = TRUE;
+    frp->fr_win->w_redr_status = true;
   else if (frp->fr_layout == FR_ROW) {
     for (frp = frp->fr_child; frp != NULL; frp = frp->fr_next)
       win_redraw_last_status(frp);
@@ -4766,7 +4766,7 @@ void win_redr_status(win_T *wp)
     return;
   busy = TRUE;
 
-  wp->w_redr_status = FALSE;
+  wp->w_redr_status = false;
   if (wp->w_status_height == 0) {
     /* no status line, can only be last window */
     redraw_cmdline = TRUE;
@@ -4776,7 +4776,7 @@ void win_redr_status(win_T *wp)
              || pum_visible()
              ) {
     /* Don't redraw right now, do it later. */
-    wp->w_redr_status = TRUE;
+    wp->w_redr_status = true;
   } else if (*p_stl != NUL || *wp->w_p_stl != NUL) {
     /* redraw custom status line */
     redraw_custom_statusline(wp);
@@ -5567,7 +5567,7 @@ next_search_hl (
       char_u      *ml;
 
       matchcol = shl->rm.startpos[0].col;
-      ml = ml_get_buf(shl->buf, lnum, FALSE) + matchcol;
+      ml = ml_get_buf(shl->buf, lnum, false) + matchcol;
       if (*ml == NUL) {
         ++matchcol;
         shl->lnum = 0;
@@ -5896,17 +5896,17 @@ void check_for_delay(int check_msg_scroll)
     os_delay(1000L, true);
     emsg_on_display = FALSE;
     if (check_msg_scroll)
-      msg_scroll = FALSE;
+      msg_scroll = false;
   }
 }
 
 /*
  * screen_valid -  allocate screen buffers if size changed
- *   If "doclear" is TRUE: clear screen if it has been resized.
- *	Returns TRUE if there is a valid screen to write to.
- *	Returns FALSE when starting up and screen not initialized yet.
+ *   If "doclear" is true: clear screen if it has been resized.
+ *	Returns true if there is a valid screen to write to.
+ *	Returns false when starting up and screen not initialized yet.
  */
-int screen_valid(int doclear)
+bool screen_valid(bool doclear)
 {
   screenalloc(doclear);            /* allocate screen buffers if size changed */
   return ScreenLines != NULL;
@@ -6213,8 +6213,8 @@ static void screenclear2(void)
   compute_cmdrow();
   msg_row = cmdline_row;        /* put cursor on last line for messages */
   msg_col = 0;
-  msg_scrolled = 0;             /* can't scroll back */
-  msg_didany = FALSE;
+  msg_scrolled = false;             /* can't scroll back */
+  msg_didany = false;
   msg_didout = FALSE;
 }
 
@@ -6321,7 +6321,7 @@ int win_ins_lines(win_T *wp, int row, int line_count, int invalid, int mayclear)
    * if no lines deleted, blank the lines that will end up below the window
    */
   if (!did_delete) {
-    wp->w_redr_status = TRUE;
+    wp->w_redr_status = true;
     redraw_cmdline = TRUE;
     nextrow = wp->w_winrow + wp->w_height + wp->w_status_height;
     lastrow = nextrow + line_count;
@@ -6336,7 +6336,7 @@ int win_ins_lines(win_T *wp, int row, int line_count, int invalid, int mayclear)
       == FAIL) {
     /* deletion will have messed up other windows */
     if (did_delete) {
-      wp->w_redr_status = TRUE;
+      wp->w_redr_status = true;
       win_rest_invalid(wp->w_next);
     }
     return FAIL;
@@ -6378,7 +6378,7 @@ int win_del_lines(win_T *wp, int row, int line_count, int invalid, int mayclear)
   if (wp->w_next || wp->w_status_height || cmdline_row < Rows - 1) {
     if (screen_ins_lines(0, wp->w_winrow + wp->w_height - line_count,
             line_count, (int)Rows, NULL) == FAIL) {
-      wp->w_redr_status = TRUE;
+      wp->w_redr_status = true;
       win_rest_invalid(wp->w_next);
     }
   }
@@ -6436,7 +6436,7 @@ static void win_rest_invalid(win_T *wp)
 {
   while (wp != NULL) {
     redraw_win_later(wp, NOT_VALID);
-    wp->w_redr_status = TRUE;
+    wp->w_redr_status = true;
     wp = wp->w_next;
   }
   redraw_cmdline = TRUE;
@@ -6984,7 +6984,7 @@ void showruler(int always)
     return;
   if (pum_visible()) {
     /* Don't redraw right now, do it later. */
-    curwin->w_redr_status = TRUE;
+    curwin->w_redr_status = true;
     return;
   }
   if ((*p_stl != NUL || *curwin->w_p_stl != NUL) && curwin->w_status_height) {
@@ -7041,7 +7041,7 @@ static void win_redr_ruler(win_T *wp, int always)
    */
   int empty_line = FALSE;
   if (!(State & INSERT)
-      && *ml_get_buf(wp->w_buffer, wp->w_cursor.lnum, FALSE) == NUL)
+      && *ml_get_buf(wp->w_buffer, wp->w_cursor.lnum, false) == NUL)
     empty_line = TRUE;
 
   /*

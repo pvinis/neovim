@@ -2701,13 +2701,13 @@ do_map (
    * replace_termcodes() also removes CTRL-Vs and sometimes backslashes.
    */
   if (haskey)
-    keys = replace_termcodes(keys, &keys_buf, TRUE, TRUE, special);
+    keys = replace_termcodes(keys, &keys_buf, true, true, special);
   orig_rhs = rhs;
   if (hasarg) {
     if (STRICMP(rhs, "<nop>") == 0)         /* "<Nop>" means nothing */
       rhs = (char_u *)"";
     else
-      rhs = replace_termcodes(rhs, &arg_buf, FALSE, TRUE, special);
+      rhs = replace_termcodes(rhs, &arg_buf, false, true, special);
   }
 
   /*
@@ -3033,7 +3033,7 @@ static void validate_maphash(void)
 /*
  * Get the mapping mode from the command name.
  */
-int get_map_mode(char_u **cmdp, int forceit)
+int get_map_mode(char_u **cmdp, bool forceit)
 {
   char_u      *p;
   int modec;
@@ -3075,7 +3075,7 @@ int get_map_mode(char_u **cmdp, int forceit)
  * Clear all mappings or abbreviations.
  * 'abbr' should be FALSE for mappings, TRUE for abbreviations.
  */
-void map_clear(char_u *cmdp, char_u *arg, int forceit, int abbr)
+void map_clear(char_u *cmdp, char_u *arg, bool forceit, int abbr)
 {
   int mode;
   int local;
@@ -3265,7 +3265,7 @@ int map_to_exists(char_u *str, char_u *modechars, int abbr)
   char_u      *buf;
   int retval;
 
-  rhs = replace_termcodes(str, &buf, FALSE, TRUE, FALSE);
+  rhs = replace_termcodes(str, &buf, false, true, false);
 
   if (vim_strchr(modechars, 'n') != NULL)
     mode |= NORMAL;
@@ -3346,7 +3346,7 @@ set_context_in_map_cmd (
     expand_T *xp,
     char_u *cmd,
     char_u *arg,
-    int forceit,                    /* TRUE if '!' given */
+    bool forceit,                    /* TRUE if '!' given */
     int isabbrev,                   /* TRUE if abbreviation */
     int isunmap,                    /* TRUE if unmap/unabbrev command */
     cmdidx_T cmdidx

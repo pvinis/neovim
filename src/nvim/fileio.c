@@ -196,7 +196,7 @@ static char *e_auchangedbuf = N_(
 
 void filemess(buf_T *buf, char_u *name, char_u *s, int attr)
 {
-  int msg_scroll_save;
+  bool msg_scroll_save;
 
   if (msg_silent != 0)
     return;
@@ -212,17 +212,17 @@ void filemess(buf_T *buf, char_u *name, char_u *s, int attr)
    */
   msg_scroll_save = msg_scroll;
   if (shortmess(SHM_OVERALL) && !exiting && p_verbose == 0)
-    msg_scroll = FALSE;
+    msg_scroll = false;
   if (!msg_scroll)      /* wait a bit when overwriting an error msg */
-    check_for_delay(FALSE);
+    check_for_delay(false);
   msg_start();
   msg_scroll = msg_scroll_save;
-  msg_scrolled_ign = TRUE;
+  msg_scrolled_ign = true;
   /* may truncate the message to avoid a hit-return prompt */
   msg_outtrans_attr(msg_may_trunc(FALSE, IObuff), attr);
   msg_clr_eos();
   ui_flush();
-  msg_scrolled_ign = FALSE;
+  msg_scrolled_ign = false;
 }
 
 /*
@@ -249,7 +249,7 @@ void filemess(buf_T *buf, char_u *name, char_u *s, int attr)
  *
  * return FAIL for failure, OK otherwise
  */
-int 
+int
 readfile (
     char_u *fname,
     char_u *sfname,
@@ -261,7 +261,7 @@ readfile (
 )
 {
   int fd = 0;
-  int newfile = (flags & READ_NEW);
+  bool newfile = (flags & READ_NEW);
   int check_readonly;
   int filtering = (flags & READ_FILTER);
   int read_stdin = (flags & READ_STDIN);
@@ -281,7 +281,7 @@ readfile (
   long size = 0;
   char_u      *p;
   off_t filesize = 0;
-  int skip_read = FALSE;
+  bool skip_read = false;
   context_sha256_T sha_ctx;
   int read_undo_file = FALSE;
   int split = 0;                        /* number of split lines */
@@ -296,11 +296,11 @@ readfile (
   int perm;
 #endif
   int fileformat = 0;                   /* end-of-line format */
-  int keep_fileformat = FALSE;
+  bool keep_fileformat = false;
   int file_readonly;
   linenr_T skip_count = 0;
   linenr_T read_count = 0;
-  int msg_save = msg_scroll;
+  bool msg_save = msg_scroll;
   linenr_T read_no_eol_lnum = 0;        /* non-zero lnum when last line of
                                         * last read was missing the eol */
   int try_mac = (vim_strchr(p_ffs, 'm') != NULL);
@@ -410,9 +410,9 @@ readfile (
   }
 
   if ((shortmess(SHM_OVER) || curbuf->b_help) && p_verbose == 0)
-    msg_scroll = FALSE;         /* overwrite previous file message */
+    msg_scroll = false;         /* overwrite previous file message */
   else
-    msg_scroll = TRUE;          /* don't overwrite previous file message */
+    msg_scroll = true;          /* don't overwrite previous file message */
 
   /*
    * If the name is too long we might crash further on, quit here.
@@ -650,8 +650,8 @@ readfile (
   curbuf->b_op_start.col = 0;
 
   if (!read_buffer) {
-    int m = msg_scroll;
-    int n = msg_scrolled;
+    bool m = msg_scroll;
+    bool n = msg_scrolled;
 
     /*
      * The file must be closed again, the autocommands may want to change
@@ -665,7 +665,7 @@ readfile (
      * should not be overwritten: Set msg_scroll, restore its value if no
      * output was done.
      */
-    msg_scroll = TRUE;
+    msg_scroll = true;
     if (filtering)
       apply_autocmds_exarg(EVENT_FILTERREADPRE, NULL, sfname,
           FALSE, curbuf, eap);
@@ -725,7 +725,7 @@ readfile (
       filemess(curbuf, sfname, (char_u *)"", 0);
   }
 
-  msg_scroll = FALSE;                   /* overwrite the file message */
+  msg_scroll = false;                   /* overwrite the file message */
 
   /*
    * Set linecnt now, before the "retry" caused by a wrong guess for
@@ -844,7 +844,7 @@ retry:
    * will be reset.
    */
   if (keep_fileformat)
-    keep_fileformat = FALSE;
+    keep_fileformat = false;
   else {
     if (eap != NULL && eap->force_ff != 0) {
       fileformat = get_fileformat_force(curbuf, eap);
@@ -1666,7 +1666,7 @@ rewind_retry:
                   if (set_options)
                     set_fileformat(EOL_UNIX, OPT_LOCAL);
                   file_rewind = TRUE;
-                  keep_fileformat = TRUE;
+                  keep_fileformat = true;
                   goto retry;
                 }
                 ff_error = EOL_DOS;
@@ -1729,7 +1729,7 @@ failed:
     // Remember the current file format.
     save_file_ff(curbuf);
     // If editing a new file: set 'fenc' for the current buffer.
-    // Also for ":read ++edit file". 
+    // Also for ":read ++edit file".
     set_string_option_direct((char_u *)"fenc", -1, fenc,
         OPT_FREE | OPT_LOCAL, 0);
   }
@@ -1877,12 +1877,12 @@ failed:
         c = TRUE;
       }
       if (msg_add_fileformat(fileformat))
-        c = TRUE;
+        c = true;
         msg_add_lines(c, (long)linecnt, filesize);
 
       xfree(keep_msg);
       keep_msg = NULL;
-      msg_scrolled_ign = TRUE;
+      msg_scrolled_ign = true;
       p = msg_trunc_attr(IObuff, FALSE, 0);
       if (read_stdin || read_buffer || restart_edit != 0
           || (msg_scrolled != 0 && !need_wait_return))
@@ -1893,7 +1893,7 @@ failed:
          * - When the screen was scrolled but there is no wait-return
          *   prompt. */
         set_keep_msg(p, 0);
-      msg_scrolled_ign = FALSE;
+      msg_scrolled_ign = false;
     }
 
     /* with errors writing the file requires ":w!" */
@@ -1956,8 +1956,8 @@ failed:
   }
 
   if (!read_stdin && !read_buffer) {
-    int m = msg_scroll;
-    int n = msg_scrolled;
+    bool m = msg_scroll;
+    bool n = msg_scrolled;
 
     /* Save the fileformat now, otherwise the buffer will be considered
      * modified if the format/encoding was automatically detected. */
@@ -1969,7 +1969,7 @@ failed:
      * should not be overwritten: Set msg_scroll, restore its value if no
      * output was done.
      */
-    msg_scroll = TRUE;
+    msg_scroll = true;
     if (filtering)
       apply_autocmds_exarg(EVENT_FILTERREADPOST, NULL, sfname,
           FALSE, curbuf, eap);
@@ -2013,7 +2013,7 @@ static int is_dev_fd_file(char_u *fname)
  * line number where we are now.
  * Used for error messages that include a line number.
  */
-static linenr_T 
+static linenr_T
 readfile_linenr (
     linenr_T linecnt,               /* line count before reading more bytes */
     char_u *p,                 /* start of more bytes read */
@@ -2044,8 +2044,8 @@ void prep_exarg(exarg_T *eap, buf_T *buf)
   eap->force_ff = 7;
 
   eap->force_bin = buf->b_p_bin ? FORCE_BIN : FORCE_NOBIN;
-  eap->read_edit = FALSE;
-  eap->forceit = FALSE;
+  eap->read_edit = false;
+  eap->forceit = false;
 }
 
 /*
@@ -2181,7 +2181,7 @@ static void check_marks_read(void)
 }
 
 #ifdef UNIX
-static void 
+static void
 set_file_time (
     char_u *fname,
     time_t atime,               /* access time */
@@ -2215,7 +2215,7 @@ set_file_time (
  *
  * If "forceit" is true, we don't care for errors when attempting backups.
  * In case of an error everything possible is done to restore the original
- * file.  But when "forceit" is TRUE, we risk losing it.
+ * file.  But when "forceit" is true, we risk losing it.
  *
  * When "reset_changed" is TRUE and "append" == FALSE and "start" == 1 and
  * "end" == curbuf->b_ml.ml_line_count, reset curbuf->b_changed.
@@ -2224,7 +2224,7 @@ set_file_time (
  *
  * return FAIL for failure, OK otherwise
  */
-int 
+int
 buf_write (
     buf_T *buf,
     char_u *fname,
@@ -2234,7 +2234,7 @@ buf_write (
     exarg_T *eap,                   /* for forced 'ff' and 'fenc', can be
                                            NULL! */
     int append,                             /* append to the file */
-    int forceit,
+    bool forceit,
     int reset_changed,
     int filtering
 )
@@ -2938,7 +2938,7 @@ nobackup:
       if (backup == NULL && errmsg == NULL)
         errmsg = (char_u *)_(
             "E509: Cannot create backup file (add ! to override)");
-      /* ignore errors when forceit is TRUE */
+      /* ignore errors when forceit is true */
       if ((some_error || errmsg != NULL) && !forceit) {
         retval = FAIL;
         goto fail;
@@ -3160,7 +3160,7 @@ nobackup:
    * file and forceit is TRUE we delete the existing file and try to create
    * a new one. If this still fails we may have lost the original file!
    * (this may happen when the user reached his quotum for number of files).
-   * Appending will fail if the file does not exist and forceit is FALSE.
+   * Appending will fail if the file does not exist and forceit is false.
    */
   while ((fd = os_open((char *)wfname, O_WRONLY | (append
                                                               ? (forceit ? (
@@ -3261,7 +3261,7 @@ restore_backup:
     write_bin = buf->b_p_bin;
 
   /*
-   * Skip the BOM when appending and the file already existed, the BOM 
+   * Skip the BOM when appending and the file already existed, the BOM
    * only makes sense at the start of the file.
    */
   if (buf->b_p_bomb && !write_bin && (!append || perm < 0)) {
@@ -3295,7 +3295,7 @@ restore_backup:
      * The next while loop is done once for each character written.
      * Keep it fast!
      */
-    ptr = ml_get_buf(buf, lnum, FALSE) - 1;
+    ptr = ml_get_buf(buf, lnum, false) - 1;
     if (write_undo_file)
       sha256_update(&sha_ctx, ptr + 1, (uint32_t)(STRLEN(ptr + 1) + 1));
     while ((c = *++ptr) != NUL) {
@@ -4084,7 +4084,7 @@ static int buf_write_bytes(struct bw_info *ip)
  * Convert a Unicode character to bytes.
  * Return TRUE for an error, FALSE when it's OK.
  */
-static int 
+static int
 ucs2bytes (
     unsigned c,                     /* in: character */
     char_u **pp,               /* in/out: pointer to result */
@@ -4626,7 +4626,7 @@ static int already_warned = FALSE;
  * Returns TRUE if some message was written (screen should be redrawn and
  * cursor positioned).
  */
-int 
+int
 check_timestamps (
     int focus                      /* called for GUI focus event */
 )
@@ -4697,8 +4697,8 @@ static int move_lines(buf_T *frombuf, buf_T *tobuf)
   /* Copy the lines in "frombuf" to "tobuf". */
   curbuf = tobuf;
   for (lnum = 1; lnum <= frombuf->b_ml.ml_line_count; ++lnum) {
-    p = vim_strsave(ml_get_buf(frombuf, lnum, FALSE));
-    if (ml_append(lnum - 1, p, 0, FALSE) == FAIL) {
+    p = vim_strsave(ml_get_buf(frombuf, lnum, false));
+    if (ml_append(lnum - 1, p, 0, false) == FAIL) {
       xfree(p);
       retval = FAIL;
       break;
@@ -4729,7 +4729,7 @@ static int move_lines(buf_T *frombuf, buf_T *tobuf)
  * return 2 if a message has been displayed.
  * return 0 otherwise.
  */
-int 
+int
 buf_check_timestamp (
     buf_T *buf,
     int focus               /* called for GUI focus event */
@@ -5009,7 +5009,7 @@ void buf_reload(buf_T *buf, int orig_mode)
 
   if (saved == OK) {
     curbuf->b_flags |= BF_CHECK_RO;           /* check for RO again */
-    keep_filetype = TRUE;                     /* don't detect 'filetype' */
+    keep_filetype = true;                     /* don't detect 'filetype' */
     if (readfile(buf->b_ffname, buf->b_fname, (linenr_T)0,
             (linenr_T)0,
             (linenr_T)MAXLNUM, &ea, flags) == FAIL) {
@@ -5038,7 +5038,7 @@ void buf_reload(buf_T *buf, int orig_mode)
   xfree(ea.cmd);
 
   if (savebuf != NULL && buf_valid(savebuf))
-    wipe_buffer(savebuf, FALSE);
+    wipe_buffer(savebuf, false);
 
   /* Invalidate diff info if necessary. */
   diff_invalidate(curbuf);
@@ -5052,7 +5052,7 @@ void buf_reload(buf_T *buf, int orig_mode)
   curwin->w_cursor = old_cursor;
   check_cursor();
   update_topline();
-  keep_filetype = FALSE;
+  keep_filetype = false;
 
   /* Update folds unless they are defined manually. */
   FOR_ALL_TAB_WINDOWS(tp, wp) {
@@ -5569,7 +5569,7 @@ void au_event_restore(char_u *old_ei)
  *
  * Mostly a {group} argument can optionally appear before <event>.
  */
-void do_autocmd(char_u *arg, int forceit)
+void do_autocmd(char_u *arg, bool forceit)
 {
   char_u      *pat;
   char_u      *envpat = NULL;
@@ -5702,10 +5702,10 @@ static int au_get_grouparg(char_u **argp)
  * do_autocmd() for one event.
  * If *pat == NUL do for all patterns.
  * If *cmd == NUL show entries.
- * If forceit == TRUE delete entries.
+ * If forceit == true delete entries.
  * If group is not AUGROUP_ALL, only use this group.
  */
-static int do_autocmd_event(event_T event, char_u *pat, int nested, char_u *cmd, int forceit, int group)
+static int do_autocmd_event(event_T event, char_u *pat, int nested, char_u *cmd, bool forceit, int group)
 {
   AutoPat     *ap;
   AutoPat     **prev_ap;
@@ -5912,7 +5912,7 @@ static int do_autocmd_event(event_T event, char_u *pat, int nested, char_u *cmd,
  * Implementation of ":doautocmd [group] event [fname]".
  * Return OK for success, FAIL for failure;
  */
-int 
+int
 do_doautocmd (
     char_u *arg,
     int do_msg                 /* give message for no matching autocmds? */
@@ -6021,7 +6021,7 @@ int check_nomodeline(char_u **argp)
  * one then use "aucmd_win".
  * Set "curbuf" and "curwin" to match "buf".
  */
-void 
+void
 aucmd_prepbuf (
     aco_save_T *aco,               /* structure to save values in */
     buf_T *buf               /* new curbuf */
@@ -6108,7 +6108,7 @@ aucmd_prepbuf (
  * Cleanup after executing autocommands for a (hidden) buffer.
  * Restore the window as it was (if possible).
  */
-void 
+void
 aucmd_restbuf (
     aco_save_T *aco               /* structure holding saved values */
 )
@@ -6193,7 +6193,7 @@ static int autocmd_nested = FALSE;
  * Execute autocommands for "event" and file name "fname".
  * Return TRUE if some commands were executed.
  */
-int 
+int
 apply_autocmds (
     event_T event,
     char_u *fname,         /* NULL or empty means use actual file name */
@@ -6222,7 +6222,7 @@ static int apply_autocmds_exarg(event_T event, char_u *fname, char_u *fname_io, 
  * conditional, no autocommands are executed.  If otherwise the autocommands
  * cause the script to be aborted, retval is set to FAIL.
  */
-int 
+int
 apply_autocmds_retval (
     event_T event,
     char_u *fname,         /* NULL or empty means use actual file name */
@@ -6321,7 +6321,7 @@ int has_cmdundefined(void)
   return first_autopat[(int)EVENT_CMDUNDEFINED] != NULL;
 }
 
-static int 
+static int
 apply_autocmds_group (
     event_T event,
     char_u *fname,         /* NULL or empty means use actual file name */
@@ -6541,13 +6541,13 @@ apply_autocmds_group (
   /*
    * Note that we are applying autocmds.  Some commands need to know.
    */
-  autocmd_busy = TRUE;
+  autocmd_busy = true;
   filechangeshell_busy = (event == EVENT_FILECHANGEDSHELL);
   ++nesting;            /* see matching decrement below */
 
   /* Remember that FileType was triggered.  Used for did_filetype(). */
   if (event == EVENT_FILETYPE)
-    did_filetype = TRUE;
+    did_filetype = true;
 
   tail = path_tail(fname);
 
@@ -6582,7 +6582,7 @@ apply_autocmds_group (
     for (ap = patcmd.curpat; ap->next != NULL; ap = ap->next)
       ap->last = FALSE;
     ap->last = TRUE;
-    check_lnums(TRUE);          /* make sure cursor and topline are valid */
+    check_lnums(true);          /* make sure cursor and topline are valid */
     do_cmdline(NULL, getnextac, (void *)&patcmd,
         DOCMD_NOWAIT|DOCMD_VERBOSE|DOCMD_REPEAT);
     if (eap != NULL) {
@@ -6622,7 +6622,7 @@ apply_autocmds_group (
     if (did_save_redobuff) {
       restoreRedobuff();
     }
-    did_filetype = FALSE;
+    did_filetype = false;
     while (au_pending_free_buf != NULL) {
       buf_T *b = au_pending_free_buf->b_next;
       xfree(au_pending_free_buf);
@@ -6690,7 +6690,7 @@ void unblock_autocmds(void)
 /*
  * Find next autocommand pattern that matches.
  */
-static void 
+static void
 auto_next_pat (
     AutoPatCmd *apc,
     int stop_at_last                   /* stop when 'last' flag is set */

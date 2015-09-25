@@ -369,7 +369,7 @@ EXTERN scid_T current_SID INIT(= 0);
 // provider function call
 EXTERN struct caller_scope {
   scid_T SID;
-  uint8_t *sourcing_name, *autocmd_fname, *autocmd_match; 
+  uint8_t *sourcing_name, *autocmd_fname, *autocmd_match;
   linenr_T sourcing_lnum;
   int autocmd_fname_full, autocmd_bufnr;
   void *funccalp;

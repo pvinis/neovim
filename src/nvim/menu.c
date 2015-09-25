@@ -226,7 +226,7 @@ ex_menu (
     } else if (modes & MENU_TIP_MODE)
       map_buf = NULL;           /* Menu tips are plain text. */
     else
-      map_to = replace_termcodes(map_to, &map_buf, FALSE, TRUE, special);
+      map_to = replace_termcodes(map_to, &map_buf, false, true, special);
     menuarg.modes = modes;
     menuarg.noremap[0] = noremap;
     menuarg.silent[0] = silent;
@@ -791,7 +791,7 @@ static int expand_emenu;                /* TRUE for ":emenu" command */
 /*
  * Work out what to complete when doing command line completion of menu names.
  */
-char_u *set_context_in_menu_cmd(expand_T *xp, char_u *cmd, char_u *arg, int forceit)
+char_u *set_context_in_menu_cmd(expand_T *xp, char_u *cmd, char_u *arg, bool forceit)
 {
   char_u      *after_dot;
   char_u      *p;
@@ -1052,7 +1052,7 @@ static int menu_namecmp(char_u *name, char_u *mname)
 static int 
 get_menu_cmd_modes (
     char_u *cmd,
-    int forceit,                /* Was there a "!" after the command? */
+    bool forceit,                /* Was there a "!" after the command? */
     int *noremap,
     int *unmenu
 )

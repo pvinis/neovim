@@ -790,7 +790,7 @@ static void syn_sync(win_T *wp, linenr_T start_lnum, synstate_T *last_valid)
             cur_si = &CUR_STATE(current_state.ga_len - 1);
             cur_si->si_h_startpos.lnum = found_current_lnum;
             cur_si->si_h_startpos.col = found_current_col;
-            update_si_end(cur_si, (int)current_col, TRUE);
+            update_si_end(cur_si, (int)current_col, true);
             check_keepend();
           }
           current_col = found_m_endpos.col;
@@ -848,7 +848,7 @@ static void syn_start_line(void)
    * previous line and regions that have "keepend".
    */
   if (!GA_EMPTY(&current_state)) {
-    syn_update_ends(TRUE);
+    syn_update_ends(true);
     check_state_ends();
   }
 
@@ -858,10 +858,10 @@ static void syn_start_line(void)
 
 /*
  * Check for items in the stack that need their end updated.
- * When "startofline" is TRUE the last item is always updated.
- * When "startofline" is FALSE the item with "keepend" is forcefully updated.
+ * When "startofline" is true the last item is always updated.
+ * When "startofline" is false the item with "keepend" is forcefully updated.
  */
-static void syn_update_ends(int startofline)
+static void syn_update_ends(bool startofline)
 {
   stateitem_T *cur_si;
   int seen_keepend;
@@ -888,7 +888,7 @@ static void syn_update_ends(int startofline)
    * Need to update the end of a start/skip/end that continues from the
    * previous line.  And regions that have "keepend", because they may
    * influence contained items.  If we've just removed "extend"
-   * (startofline == 0) then we should update ends of normal regions
+   * (startofline == false) then we should update ends of normal regions
    * contained inside "keepend" because "extend" could have extended
    * these "keepend" regions as well as contained normal regions.
    * Then check for items ending in column 0.
@@ -2166,7 +2166,7 @@ static stateitem_T *push_next_match(stateitem_T *cur_si)
     cur_si->si_extmatch = ref_extmatch(next_match_extmatch);
     if (spp->sp_type == SPTYPE_START && !(spp->sp_flags & HL_ONELINE)) {
       /* Try to find the end pattern in the current line */
-      update_si_end(cur_si, (int)(next_match_m_endpos.col), TRUE);
+      update_si_end(cur_si, (int)(next_match_m_endpos.col), true);
       check_keepend();
     } else {
       cur_si->si_m_endpos = next_match_m_endpos;
@@ -2272,7 +2272,7 @@ static void check_state_ends(void)
           break;
 
         if (had_extend && keepend_level >= 0) {
-          syn_update_ends(FALSE);
+          syn_update_ends(false);
           if (GA_EMPTY(&current_state))
             break;
         }
@@ -2292,7 +2292,7 @@ static void check_state_ends(void)
             && SYN_ITEMS(syn_block)[cur_si->si_idx].sp_type
             == SPTYPE_START
             && !(cur_si->si_flags & (HL_MATCH | HL_KEEPEND))) {
-          update_si_end(cur_si, (int)current_col, TRUE);
+          update_si_end(cur_si, (int)current_col, true);
           check_keepend();
           if ((current_next_flags & HL_HAS_EOL)
               && keepend_level < 0
@@ -2418,7 +2418,7 @@ static void
 update_si_end (
     stateitem_T *sip,
     int startcol,               /* where to start searching for the end */
-    int force                  /* when TRUE overrule a previous end */
+    bool force                  /* when true overrule a previous end */
 )
 {
   lpos_T startpos;
@@ -5934,7 +5934,7 @@ int load_colors(char_u *name)
 {
   char_u      *buf;
   int retval = FAIL;
-  static int recursive = FALSE;
+  static bool recursive = false;
 
   /* When being called recursively, this is probably because setting
    * 'background' caused the highlighting to be reloaded.  This means it is
@@ -5942,14 +5942,14 @@ int load_colors(char_u *name)
   if (recursive)
     return OK;
 
-  recursive = TRUE;
+  recursive = true;
   buf = xmalloc(STRLEN(name) + 12);
   sprintf((char *)buf, "colors/%s.vim", name);
-  retval = source_runtime(buf, FALSE);
+  retval = source_runtime(buf, false);
   xfree(buf);
   apply_autocmds(EVENT_COLORSCHEME, name, curbuf->b_fname, FALSE, curbuf);
 
-  recursive = FALSE;
+  recursive = true;
   ui_refresh();
 
   return retval;
@@ -5958,13 +5958,13 @@ int load_colors(char_u *name)
 /*
  * Handle the ":highlight .." command.
  * When using ":hi clear" this is called recursively for each group with
- * "forceit" and "init" both TRUE.
+ * "forceit" and "init" both true.
  */
 void 
 do_highlight (
     char_u *line,
-    int forceit,
-    int init                   /* TRUE when called for initializing */
+    bool forceit,
+    bool init                   /* true when called for initializing */
 )
 {
   char_u      *name_end;
@@ -5978,12 +5978,12 @@ do_highlight (
   int attr;
   int id;
   int idx;
-  int dodefault = FALSE;
-  int doclear = FALSE;
-  int dolink = FALSE;
-  int error = FALSE;
+  bool dodefault = false;
+  bool doclear = false;
+  bool dolink = false;
+  bool error = false;
   int color;
-  int is_normal_group = FALSE;                  /* "Normal" group */
+  bool is_normal_group = false;                  /* "Normal" group */
 
   /*
    * If no argument, list current highlighting.
@@ -6005,7 +6005,7 @@ do_highlight (
    * Check for "default" argument.
    */
   if (STRNCMP(line, "default", name_end - line) == 0) {
-    dodefault = TRUE;
+    dodefault = true;
     line = linep;
     name_end = skiptowhite(line);
     linep = skipwhite(name_end);
@@ -6015,9 +6015,9 @@ do_highlight (
    * Check for "clear" or "link" argument.
    */
   if (STRNCMP(line, "clear", name_end - line) == 0)
-    doclear = TRUE;
+    doclear = true;
   if (STRNCMP(line, "link", name_end - line) == 0)
-    dolink = TRUE;
+    dolink = true;
 
   /*
    * ":highlight {group-name}": list highlighting for one group.
@@ -6124,7 +6124,7 @@ do_highlight (
     return;
 
   if (STRCMP(HL_TABLE()[idx].sg_name_u, "NORMAL") == 0)
-    is_normal_group = TRUE;
+    is_normal_group = true;
 
   /* Clear the highlighting for ":hi clear {group}" and ":hi clear". */
   if (doclear || (forceit && init)) {
@@ -6138,7 +6138,7 @@ do_highlight (
       key_start = linep;
       if (*linep == '=') {
         EMSG2(_("E415: unexpected equal sign: %s"), key_start);
-        error = TRUE;
+        error = true;
         break;
       }
 
@@ -6166,7 +6166,7 @@ do_highlight (
        */
       if (*linep != '=') {
         EMSG2(_("E416: missing equal sign: %s"), key_start);
-        error = TRUE;
+        error = true;
         break;
       }
       ++linep;
@@ -6180,7 +6180,7 @@ do_highlight (
         linep = vim_strchr(linep, '\'');
         if (linep == NULL) {
           EMSG2(_(e_invarg2), key_start);
-          error = TRUE;
+          error = true;
           break;
         }
       } else {
@@ -6189,7 +6189,7 @@ do_highlight (
       }
       if (linep == arg_start) {
         EMSG2(_("E417: missing argument: %s"), key_start);
-        error = TRUE;
+        error = true;
         break;
       }
       xfree(arg);
@@ -6217,7 +6217,7 @@ do_highlight (
           }
           if (i < 0) {
             EMSG2(_("E418: Illegal value: %s"), arg);
-            error = TRUE;
+            error = true;
             break;
           }
           if (arg[off] == ',')                  /* another one follows */
@@ -6261,7 +6261,7 @@ do_highlight (
               color = cterm_normal_fg_color - 1;
             else {
               EMSG(_("E419: FG color unknown"));
-              error = TRUE;
+              error = true;
               break;
             }
           } else if (STRICMP(arg, "bg") == 0)   {
@@ -6269,7 +6269,7 @@ do_highlight (
               color = cterm_normal_bg_color - 1;
             else {
               EMSG(_("E420: BG color unknown"));
-              error = TRUE;
+              error = true;
               break;
             }
           } else {
@@ -6324,7 +6324,7 @@ do_highlight (
               EMSG2(_(
                       "E421: Color name or number not recognized: %s"),
                   key_start);
-              error = TRUE;
+              error = true;
               break;
             }
 
@@ -6434,7 +6434,7 @@ do_highlight (
         // Ignored for now
       } else {
         EMSG2(_("E423: Illegal argument: %s"), key_start);
-        error = TRUE;
+        error = true;
         break;
       }
 

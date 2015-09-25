@@ -104,7 +104,7 @@
 #define DO_NOT_FREE_CNT 99999   /* refcount for dict or list that should not
                                    be freed. */
 
-#define AUTOLOAD_CHAR '#'       /* Character used as separator in autoload 
+#define AUTOLOAD_CHAR '#'       /* Character used as separator in autoload
                                    function/variable names. */
 
 /*
@@ -510,7 +510,7 @@ typedef struct {
 #define FNE_CHECK_START 2       /* find_name_end(): check name starts with
                                    valid character */
 static uint64_t current_job_id = 1;
-static PMap(uint64_t) *jobs = NULL; 
+static PMap(uint64_t) *jobs = NULL;
 
 typedef enum {
   kMPNil,
@@ -723,7 +723,7 @@ static char_u   *redir_varname = NULL;
  * Start recording command output to a variable
  * Returns OK if successfully completed the setup.  FAIL otherwise.
  */
-int 
+int
 var_redir_start (
     char_u *name,
     int append                     /* append to an existing variable */
@@ -914,7 +914,7 @@ void eval_patch(char_u *origfile, char_u *difffile, char_u *outfile)
  * Sets "error" to TRUE if there was an error.
  * Return TRUE or FALSE.
  */
-int 
+int
 eval_to_bool (
     char_u *arg,
     int *error,
@@ -1173,7 +1173,7 @@ typval_T *eval_expr(char_u *arg, char_u **nextcmd)
  * arguments are currently supported.
  * Returns OK or FAIL.
  */
-int 
+int
 call_vim_function (
     char_u *func,
     int argc,
@@ -1239,7 +1239,7 @@ call_vim_function (
  * Returns -1 when calling the function fails.
  * Uses argv[argc] for the function arguments.
  */
-long 
+long
 call_func_retnr (
     char_u *func,
     int argc,
@@ -1493,7 +1493,7 @@ void ex_let(exarg_T *eap)
  * or concatenate.
  * Returns OK or FAIL;
  */
-static int 
+static int
 ex_let_vars (
     char_u *arg_start,
     typval_T *tv,
@@ -2908,7 +2908,7 @@ static void ex_unletlock(exarg_T *eap, char_u *argstart, int deep)
   eap->nextcmd = check_nextcmd(arg);
 }
 
-static int do_unlet_var(lval_T *lp, char_u *name_end, int forceit)
+static int do_unlet_var(lval_T *lp, char_u *name_end, bool forceit)
 {
   int ret = OK;
   int cc;
@@ -2962,7 +2962,7 @@ static int do_unlet_var(lval_T *lp, char_u *name_end, int forceit)
  * "unlet" a variable.  Return OK if it existed, FAIL if not.
  * When "forceit" is TRUE don't complain if the variable doesn't exist.
  */
-int do_unlet(char_u *name, int forceit)
+int do_unlet(char_u *name, bool forceit)
 {
   hashtab_T   *ht;
   hashitem_T  *hi;
@@ -3915,7 +3915,7 @@ static int eval5(char_u **arg, typval_T *rettv, int evaluate)
  *
  * Return OK or FAIL.
  */
-static int 
+static int
 eval6 (
     char_u **arg,
     typval_T *rettv,
@@ -4052,7 +4052,7 @@ eval6 (
  *
  * Return OK or FAIL.
  */
-static int 
+static int
 eval7 (
     char_u **arg,
     typval_T *rettv,
@@ -4307,7 +4307,7 @@ eval7 (
  * "*arg" points to the '[' or '.'.
  * Returns FAIL or OK. "*arg" is advanced to after the ']'.
  */
-static int 
+static int
 eval_index (
     char_u **arg,
     typval_T *rettv,
@@ -4533,7 +4533,7 @@ eval_index (
  * "arg" is advanced to character after the option name.
  * Return OK or FAIL.
  */
-static int 
+static int
 get_option_tv (
     char_u **arg,
     typval_T *rettv,     /* when NULL, only check if option exists */
@@ -4862,7 +4862,7 @@ void list_unref(list_T *l)
  * Free a list, including all items it points to.
  * Ignores the reference count.
  */
-void 
+void
 list_free (
     list_T *l,
     int recurse            /* Free Lists and Dictionaries recursively. */
@@ -4929,7 +4929,7 @@ static long list_len(list_T *l)
 /*
  * Return TRUE when two lists have exactly the same values.
  */
-static int 
+static int
 list_equal (
     list_T *l1,
     list_T *l2,
@@ -4965,7 +4965,7 @@ dictitem_T *dict_lookup(hashitem_T *hi)
 /*
  * Return TRUE when two dictionaries have exactly the same key/values.
  */
-static int 
+static int
 dict_equal (
     dict_T *d1,
     dict_T *d2,
@@ -5005,7 +5005,7 @@ static int tv_equal_recurse_limit;
  * Compares the items just like "==" would compare them, but strings and
  * numbers are different.  Floats and numbers are also different.
  */
-static int 
+static int
 tv_equal (
     typval_T *tv1,
     typval_T *tv2,
@@ -5137,7 +5137,7 @@ listitem_T *list_find(list_T *l, long n)
 /*
  * Get list item "l[idx]" as a number.
  */
-static long 
+static long
 list_find_nr (
     list_T *l,
     long idx,
@@ -5460,7 +5460,7 @@ typedef struct join_S {
   char_u      *tofree;
 } join_T;
 
-static int 
+static int
 list_join_inner (
     garray_T *gap,               /* to store the result in */
     list_T *l,
@@ -5902,7 +5902,7 @@ void dict_unref(dict_T *d)
  * Free a Dictionary, including all items it contains.
  * Ignores the reference count.
  */
-void 
+void
 dict_free (
     dict_T *d,
     int recurse            /* Free Lists and Dictionaries recursively. */
@@ -6151,7 +6151,7 @@ static bool get_dict_callback(dict_T *d, char *key, ufunc_T **result)
     *result = NULL;
     return true;
   }
-  
+
   if (di->di_tv.v_type != VAR_FUNC && di->di_tv.v_type != VAR_STRING) {
     EMSG(_("Argument is not a function or function name"));
     *result = NULL;
@@ -6531,7 +6531,7 @@ static char_u *string_quote(char_u *str, int function)
  * this always uses a decimal point.
  * Returns the length of the text that was consumed.
  */
-static int 
+static int
 string2float (
     char_u *text,
     float_T *value         /* result stored here */
@@ -6762,7 +6762,7 @@ static struct fst {
   {"mapcheck",        1, 3, f_mapcheck},
   {"match",           2, 4, f_match},
   {"matchadd",        2, 4, f_matchadd},
-  {"matchaddpos",     2, 4, f_matchaddpos}, 
+  {"matchaddpos",     2, 4, f_matchaddpos},
   {"matcharg",        1, 1, f_matcharg},
   {"matchdelete",     1, 1, f_matchdelete},
   {"matchend",        2, 4, f_matchend},
@@ -6944,7 +6944,7 @@ char_u *get_expr_name(expand_T *xp, int idx)
  * Find internal function in table above.
  * Return index, or -1 if not found
  */
-static int 
+static int
 find_internal_func (
     char_u *name              /* name of the function */
 )
@@ -6997,7 +6997,7 @@ static char_u *deref_func_name(char_u *name, int *lenp, int no_autoload)
  * Allocate a variable for the result of a function.
  * Return OK or FAIL.
  */
-static int 
+static int
 get_func_tv (
     char_u *name,              /* name of the function */
     int len,                        /* length of "name" */
@@ -7412,7 +7412,7 @@ static void f_append(typval_T *argvars, typval_T *rettv)
         rettv->vval.v_number = 1;               /* Failed */
         break;
       }
-      ml_append(lnum + added, line, (colnr_T)0, FALSE);
+      ml_append(lnum + added, line, (colnr_T)0, false);
       ++added;
       if (l == NULL)
         break;
@@ -9203,7 +9203,7 @@ static void get_buffer_lines(buf_T *buf, linenr_T start, linenr_T end, int retli
 
   if (!retlist) {
     if (start >= 1 && start <= buf->b_ml.ml_line_count)
-      p = ml_get_buf(buf, start, FALSE);
+      p = ml_get_buf(buf, start, false);
     else
       p = (char_u *)"";
     rettv->vval.v_string = vim_strsave(p);
@@ -9217,7 +9217,7 @@ static void get_buffer_lines(buf_T *buf, linenr_T start, linenr_T end, int retli
       end = buf->b_ml.ml_line_count;
     while (start <= end) {
       list_append_string(
-        rettv->vval.v_list, ml_get_buf(buf, start++, FALSE), -1);
+        rettv->vval.v_list, ml_get_buf(buf, start++, false), -1);
     }
   }
 }
@@ -9642,7 +9642,7 @@ static void f_getmatches(typval_T *argvars, typval_T *rettv)
   while (cur != NULL) {
     dict_T *dict = dict_alloc();
     if (cur->match.regprog == NULL) {
-      // match added with matchaddpos() 
+      // match added with matchaddpos()
       for (i = 0; i < MAXPOSMATCH; ++i) {
         llpos_T   *llpos;
         char      buf[6];
@@ -9770,7 +9770,7 @@ static void f_getreg(typval_T *argvars, typval_T *rettv)
 
   if (return_list) {
     rettv->v_type = VAR_LIST;
-    rettv->vval.v_list = 
+    rettv->vval.v_list =
       get_reg_contents(regname, (arg2 ? kGRegExprSrc : 0) | kGRegList);
     if (rettv->vval.v_list != NULL) {
       rettv->vval.v_list->lv_refcount++;
@@ -9925,7 +9925,7 @@ static void f_getwinvar(typval_T *argvars, typval_T *rettv)
 /*
  * getwinvar() and gettabwinvar()
  */
-static void 
+static void
 getwinvar (
     typval_T *argvars,
     typval_T *rettv,
@@ -10534,7 +10534,7 @@ static void get_user_input(typval_T *argvars, typval_T *rettv, int inputdialog)
       msg_start();
       msg_clr_eos();
       msg_puts_attr(prompt, echo_attr);
-      msg_didout = FALSE;
+      msg_didout = false;
       msg_starthere();
       *p = c;
     }
@@ -10583,7 +10583,7 @@ static void get_user_input(typval_T *argvars, typval_T *rettv, int inputdialog)
 
     /* since the user typed this, no need to wait for return */
     need_wait_return = FALSE;
-    msg_didout = FALSE;
+    msg_didout = false;
   }
   cmd_silent = cmd_silent_save;
 }
@@ -10622,7 +10622,7 @@ static void f_inputlist(typval_T *argvars, typval_T *rettv)
   msg_start();
   msg_row = Rows - 1;   /* for when 'cmdheight' > 1 */
   lines_left = Rows;    /* avoid more prompt */
-  msg_scroll = TRUE;
+  msg_scroll = true;
   msg_clr_eos();
 
   for (li = argvars[0].vval.v_list->lv_first; li != NULL; li = li->li_next) {
@@ -11000,7 +11000,7 @@ static char **tv_to_argv(typval_T *cmd_tv, char **cmd)
   if (cmd) {
     *cmd = (char *)exe;
   }
-  
+
   // Build the argument vector
   int i = 0;
   char **argv = xcalloc(argc + 1, sizeof(char *));
@@ -11445,7 +11445,7 @@ static void get_maparg(typval_T *argvars, typval_T *rettv, int exact)
 
   mode = get_map_mode(&which, 0);
 
-  keys = replace_termcodes(keys, &keys_buf, TRUE, TRUE, FALSE);
+  keys = replace_termcodes(keys, &keys_buf, true, true, false);
   rhs = check_map(keys, mode, exact, FALSE, abbr, &mp, &buffer_local);
   xfree(keys_buf);
 
@@ -11718,7 +11718,7 @@ static void f_matchadd(typval_T *argvars, typval_T *rettv)
 static void f_matchaddpos(typval_T *argvars, typval_T *rettv) FUNC_ATTR_NONNULL_ALL
 {
     rettv->vval.v_number = -1;
-    
+
     char_u buf[NUMBUFLEN];
     char_u *group;
     group = get_tv_string_buf_chk(&argvars[0], buf);
@@ -11751,7 +11751,7 @@ static void f_matchaddpos(typval_T *argvars, typval_T *rettv) FUNC_ATTR_NONNULL_
         return;
     }
 
-    // id == 3 is ok because matchaddpos() is supposed to substitute :3match 
+    // id == 3 is ok because matchaddpos() is supposed to substitute :3match
     if (id == 1 || id == 2) {
         EMSGN("E798: ID is reserved for \"match\": %" PRId64, id);
         return;
@@ -12037,7 +12037,7 @@ static int msgpack_list_write(void *data, const char *buf, size_t len)
 ///
 /// @param[in]  list  Converted list.
 /// @param[out]  ret_len  Resulting buffer length.
-/// @param[out]  ret_buf  Allocated buffer with the result or NULL if ret_len is 
+/// @param[out]  ret_buf  Allocated buffer with the result or NULL if ret_len is
 ///                       zero.
 ///
 /// @return true in case of success, false in case of failure.
@@ -12081,7 +12081,7 @@ static inline bool vim_list_to_buf(const list_T *const list,
 /// Convert one VimL value to msgpack
 ///
 /// @param       packer   Messagepack packer.
-/// @param[out]  mpstack  Stack with values to convert. Only used for pushing 
+/// @param[out]  mpstack  Stack with values to convert. Only used for pushing
 ///                       values to it.
 /// @param[in]   tv       Converted value.
 ///
@@ -12186,10 +12186,10 @@ static int convert_one_value(msgpack_packer *const packer,
             varnumber_T highest_bits;
             varnumber_T high_bits;
             varnumber_T low_bits;
-            // List of 4 integers; first is signed (should be 1 or -1, but this 
-            // is not checked), second is unsigned and have at most one (sign is 
-            // -1) or two (sign is 1) non-zero bits (number of bits is not 
-            // checked), other unsigned and have at most 31 non-zero bits 
+            // List of 4 integers; first is signed (should be 1 or -1, but this
+            // is not checked), second is unsigned and have at most one (sign is
+            // -1) or two (sign is 1) non-zero bits (number of bits is not
+            // checked), other unsigned and have at most 31 non-zero bits
             // (number of bits is not checked).
             if (val_di->di_tv.v_type != VAR_LIST
                 || (val_list = val_di->di_tv.vval.v_list) == NULL
@@ -14131,7 +14131,7 @@ static void f_searchpairpos(typval_T *argvars, typval_T *rettv)
  * Used by searchpair(), see its documentation for the details.
  * Returns 0 or -1 for no match,
  */
-long 
+long
 do_searchpair (
     char_u *spat,          /* start pattern */
     char_u *mpat,          /* middle pattern */
@@ -14500,7 +14500,7 @@ static void f_setline(typval_T *argvars, typval_T *rettv)
     } else if (added > 0 || u_save(lnum - 1, lnum) == OK) {
       /* lnum is one past the last line, append the line */
       ++added;
-      if (ml_append(lnum - 1, line, (colnr_T)0, FALSE) == OK)
+      if (ml_append(lnum - 1, line, (colnr_T)0, false) == OK)
         rettv->vval.v_number = 0;               /* OK */
     }
 
@@ -14975,7 +14975,7 @@ static int item_compare(const void *s1, const void *s2, bool keep_zero)
   if (res == 0 && !keep_zero) {
     res = si1->idx > si2->idx ? 1 : -1;
   }
-  
+
   xfree(tofree1);
   xfree(tofree2);
   return res;
@@ -15923,7 +15923,7 @@ static list_T* string_to_list(char_u *str, size_t len, bool keepempty)
   return list;
 }
 
-static void get_system_output_as_rettv(typval_T *argvars, typval_T *rettv, 
+static void get_system_output_as_rettv(typval_T *argvars, typval_T *rettv,
                                        bool retlist)
 {
   rettv->v_type = VAR_STRING;
@@ -17463,7 +17463,7 @@ char_u *set_cmdarg(exarg_T *eap, char_u *oldarg)
  * Get the value of internal variable "name".
  * Return OK or FAIL.
  */
-static int 
+static int
 get_var_tv (
     char_u *name,
     int len,                        /* length of "name" */
@@ -17516,7 +17516,7 @@ get_var_tv (
  * Also handle function call with Funcref variable: func(expr)
  * Can all be combined: dict.func(expr)[idx]['func'](expr)
  */
-static int 
+static int
 handle_subscript (
     char_u **arg,
     typval_T *rettv,
@@ -18068,7 +18068,7 @@ static void list_one_var(dictitem_T *v, char_u *prefix, int *first)
   xfree(tofree);
 }
 
-static void 
+static void
 list_one_var_a (
     char_u *prefix,
     char_u *name,
@@ -18114,7 +18114,7 @@ list_one_var_a (
  * If the variable already exists, the value is updated.
  * Otherwise the variable is created.
  */
-static void 
+static void
 set_var (
     char_u *name,
     typval_T *tv,
@@ -18246,7 +18246,7 @@ static int var_check_fixed(int flags, char_u *name)
  * Check if a funcref is assigned to a valid variable name.
  * Return TRUE and give an error if not.
  */
-static int 
+static int
 var_check_func_name (
     char_u *name,        /* points to start of variable name */
     int new_var         /* TRUE when creating the variable */
@@ -18769,7 +18769,7 @@ void ex_function(exarg_T *eap)
             msg_putchar(' ');
           if (j < 99)
             msg_putchar(' ');
-          msg_prt_line(FUNCLINE(fp, j), FALSE);
+          msg_prt_line(FUNCLINE(fp, j), false);
           ui_flush();                  /* show a line at a time */
           os_breakcheck();
         }
@@ -18919,7 +18919,7 @@ void ex_function(exarg_T *eap)
   nesting = 0;
   for (;; ) {
     if (KeyTyped) {
-      msg_scroll = TRUE;
+      msg_scroll = true;
       saved_wait_return = FALSE;
     }
     need_wait_return = FALSE;
@@ -19602,7 +19602,7 @@ void func_dump_profile(FILE *fd)
   xfree(sorttab);
 }
 
-static void 
+static void
 prof_sort_list (
     FILE *fd,
     ufunc_T **sorttab,
@@ -19678,7 +19678,7 @@ static int prof_self_cmp(const void *s1, const void *s2)
  * If "name" has a package name try autoloading the script for it.
  * Return TRUE if a package was loaded.
  */
-static int 
+static int
 script_autoload (
     char_u *name,
     int reload                 /* load script again when already loaded */
@@ -19922,7 +19922,7 @@ void func_ref(char_u *name)
 /*
  * Call a user function.
  */
-static void 
+static void
 call_user_func (
     ufunc_T *fp,                /* pointer to function */
     int argcount,                   /* nr of args */
@@ -20127,7 +20127,7 @@ call_user_func (
 
   bool func_not_yet_profiling_but_should =
     do_profiling == PROF_YES
-    && !fp->uf_profiling && has_profiling(FALSE, fp->uf_name, NULL);
+    && !fp->uf_profiling && has_profiling(false, fp->uf_name, NULL);
 
   if (func_not_yet_profiling_but_should)
     func_do_profile(fp);
@@ -20296,7 +20296,7 @@ static int can_free_funccal(funccall_T *fc, int copyID)
 /*
  * Free "fc" and what it contains.
  */
-static void 
+static void
 free_funccal (
     funccall_T *fc,
     int free_val              /* a: vars were allocated */
@@ -20814,7 +20814,7 @@ void ex_oldfiles(exarg_T *eap)
     msg((char_u *)_("No old files"));
   else {
     msg_start();
-    msg_scroll = TRUE;
+    msg_scroll = true;
     for (li = l->lv_first; li != NULL && !got_int; li = li->li_next) {
       msg_outnum((long)++nr);
       MSG_PUTS(": ");
@@ -20840,7 +20840,7 @@ void ex_oldfiles(exarg_T *eap)
  * Returns VALID_ flags or -1 for failure.
  * When there is an error, *fnamep is set to NULL.
  */
-int 
+int
 modify_fname (
     char_u *src,               /* string with modifiers */
     size_t *usedlen,           /* characters after src that are used */
@@ -21520,7 +21520,7 @@ typval_T eval_call_provider(char *provider, char *method, list_T *arguments)
   restore_funccal(provider_caller_scope.funccalp);
   provider_caller_scope = saved_provider_caller_scope;
   provider_call_nesting--;
-  
+
   return rettv;
 }
 

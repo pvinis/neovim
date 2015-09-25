@@ -504,7 +504,7 @@ static void diff_check_unchanged(tabpage_T *tp, diff_T *dp)
       }
       char_u *line_org = vim_strsave(ml_get_buf(tp->tp_diffbuf[i_org],
                                                 dp->df_lnum[i_org] + off_org,
-                                                FALSE));
+                                                false));
 
       int i_new;
       for (i_new = i_org + 1; i_new < DB_COUNT; ++i_new) {
@@ -523,7 +523,7 @@ static void diff_check_unchanged(tabpage_T *tp, diff_T *dp)
 
         if (diff_cmp(line_org, ml_get_buf(tp->tp_diffbuf[i_new],
                                           dp->df_lnum[i_new] + off_new,
-                                          FALSE)) != 0) {
+                                          false)) != 0) {
           break;
         }
       }
@@ -820,7 +820,7 @@ static void diff_file(char_u *tmp_orig, char_u *tmp_new, char_u *tmp_diff)
                  (diff_flags & DIFF_IWHITE) ? "-b " : "",
                  (diff_flags & DIFF_ICASE) ? "-i " : "",
                  tmp_orig, tmp_new);
-    append_redir(cmd, (int)len, p_srr, tmp_diff);
+    append_redir(cmd, len, p_srr, tmp_diff);
     block_autocmds(); /* Avoid ShellCmdPost stuff */
     (void)call_shell(
         cmd,
@@ -1555,10 +1555,10 @@ static int diff_equal_entry(diff_T *dp, int idx1, int idx2)
   int i;
   for (i = 0; i < dp->df_count[idx1]; ++i) {
     char_u *line = vim_strsave(ml_get_buf(curtab->tp_diffbuf[idx1],
-                                          dp->df_lnum[idx1] + i, FALSE));
+                                          dp->df_lnum[idx1] + i, false));
 
     int cmp = diff_cmp(line, ml_get_buf(curtab->tp_diffbuf[idx2],
-                                        dp->df_lnum[idx2] + i, FALSE));
+                                        dp->df_lnum[idx2] + i, false));
     xfree(line);
 
     if (cmp != 0) {
@@ -1858,7 +1858,7 @@ int diff_find_change(win_T *wp, linenr_T lnum, int *startp, int *endp)
   int added = TRUE;
 
   // Make a copy of the line, the next ml_get() will invalidate it.
-  char_u *line_org = vim_strsave(ml_get_buf(wp->w_buffer, lnum, FALSE));
+  char_u *line_org = vim_strsave(ml_get_buf(wp->w_buffer, lnum, false));
 
   int idx = diff_buf_idx(wp->w_buffer);
   if (idx == DB_COUNT) {
@@ -1890,7 +1890,7 @@ int diff_find_change(win_T *wp, linenr_T lnum, int *startp, int *endp)
       }
       added = FALSE;
       line_new = ml_get_buf(curtab->tp_diffbuf[i],
-                            dp->df_lnum[i] + off, FALSE);
+                            dp->df_lnum[i] + off, false);
 
       // Search for start of difference
       si_org = si_new = 0;
@@ -2260,8 +2260,8 @@ void ex_diffgetput(exarg_T *eap)
         if (nr > curtab->tp_diffbuf[idx_from]->b_ml.ml_line_count) {
           break;
         }
-        p = vim_strsave(ml_get_buf(curtab->tp_diffbuf[idx_from], nr, FALSE));
-        ml_append(lnum + i - 1, p, 0, FALSE);
+        p = vim_strsave(ml_get_buf(curtab->tp_diffbuf[idx_from], nr, false));
+        ml_append(lnum + i - 1, p, 0, false);
         xfree(p);
         added++;
         if (buf_empty && (curbuf->b_ml.ml_line_count == 2)) {

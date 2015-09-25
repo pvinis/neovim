@@ -439,7 +439,7 @@ EXTERN long p_mmp;              /* 'maxmempattern' */
 EXTERN long p_mmt;              /* 'maxmemtot' */
 EXTERN long p_mis;              /* 'menuitems' */
 EXTERN char_u   *p_msm;         /* 'mkspellmem' */
-EXTERN long p_mls;              /* 'modelines' */
+EXTERN int p_mls;				/* 'modelines' */
 EXTERN char_u   *p_mouse;       /* 'mouse' */
 EXTERN char_u   *p_mousem;      /* 'mousemodel' */
 EXTERN long p_mouset;           /* 'mousetime' */

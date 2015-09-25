@@ -589,7 +589,7 @@ void set_init_1(void)
  * Set an option to its default value.
  * This does not take care of side effects!
  */
-static void 
+static void
 set_option_default (
     int opt_idx,
     int opt_flags,                  /* OPT_FREE, OPT_LOCAL and/or OPT_GLOBAL */
@@ -650,7 +650,7 @@ set_option_default (
 /*
  * Set all options (except terminal options) to their default value.
  */
-static void 
+static void
 set_options_default (
     int opt_flags                  /* OPT_FREE, OPT_LOCAL and/or OPT_GLOBAL */
 )
@@ -896,7 +896,7 @@ void set_title_defaults(void)
  *
  * returns FAIL if an error is detected, OK otherwise
  */
-int 
+int
 do_set (
     char_u *arg,               /* option string (may be written to!) */
     int opt_flags
@@ -1590,7 +1590,7 @@ theend:
  * Call this when an option has been given a new value through a user command.
  * Sets the P_WAS_SET flag and takes care of the P_INSECURE flag.
  */
-static void 
+static void
 did_set_option (
     int opt_idx,
     int opt_flags,              /* possibly with OPT_MODELINE */
@@ -1658,7 +1658,7 @@ static char_u *check_cedit(void)
  * When switching the title or icon off, call ui_set_{icon,title}(NULL) to get
  * the old value back.
  */
-static void 
+static void
 did_set_title (
     int icon                   /* Did set icon instead of title */
 )
@@ -1680,7 +1680,7 @@ did_set_title (
 /*
  * set_options_bin -  called when 'bin' changes value.
  */
-void 
+void
 set_options_bin (
     int oldval,
     int newval,
@@ -1975,7 +1975,7 @@ static void redraw_titles(void) {
  * When "set_sid" is zero set the scriptID to current_SID.  When "set_sid" is
  * SID_NONE don't set the scriptID.  Otherwise set the scriptID to "set_sid".
  */
-void 
+void
 set_string_option_direct (
     char_u *name,
     int opt_idx,
@@ -2030,7 +2030,7 @@ set_string_option_direct (
 /*
  * Set global value for string option when it's a local option.
  */
-static void 
+static void
 set_string_option_global (
     int opt_idx,                    /* option index */
     char_u **varp             /* pointer to option variable */
@@ -2623,7 +2623,7 @@ did_set_string_option (
       errmsg = e_invarg;
     } else {
       if (curwin->w_status_height) {
-        curwin->w_redr_status = TRUE;
+        curwin->w_redr_status = true;
         redraw_later(VALID);
       }
       curbuf->b_help = (curbuf->b_p_bt[0] == 'h');
@@ -2693,7 +2693,7 @@ did_set_string_option (
   /* 'pastetoggle': translate key codes like in a mapping */
   else if (varp == &p_pt) {
     if (*p_pt) {
-      (void)replace_termcodes(p_pt, &p, TRUE, TRUE, FALSE);
+      (void)replace_termcodes(p_pt, &p, true, true, false);
       if (p != NULL) {
         if (new_value_alloced)
           free_string_option(p_pt);
@@ -2868,7 +2868,7 @@ did_set_string_option (
           curbuf->b_fname, TRUE, curbuf);
     } else if (varp == &(curbuf->b_p_ft)) {
       /* 'filetype' is set, trigger the FileType autocommand */
-      did_filetype = TRUE;
+      did_filetype = true;
       apply_autocmds(EVENT_FILETYPE, curbuf->b_p_ft,
           curbuf->b_fname, TRUE, curbuf);
     }
@@ -4070,7 +4070,7 @@ bool set_tty_option(char *name, char *value)
  *	     hidden String option: -2.
  *		   unknown option: -3.
  */
-int 
+int
 get_option_value (
     char_u *name,
     long *numval,
@@ -4126,7 +4126,7 @@ get_option_value (
 // opt_type). Uses
 //
 // Returned flags:
-//       0 hidden or unknown option, also option that does not have requested 
+//       0 hidden or unknown option, also option that does not have requested
 //         type (see SREQ_* in option_defs.h)
 //  see SOPT_* in option_defs.h for other flags
 //
@@ -4351,7 +4351,7 @@ static int find_key_option(char_u *arg)
  * if 'all' == 0: show changed options
  * if 'all' == 1: show all normal options
  */
-static void 
+static void
 showoptions (
     int all,
     int opt_flags                  /* OPT_LOCAL and/or OPT_GLOBAL */
@@ -4466,7 +4466,7 @@ static int optval_default(vimoption_T *p, char_u *varp)
  * showoneopt: show the value of one option
  * must not be called with a hidden option!
  */
-static void 
+static void
 showoneopt (
     vimoption_T *p,
     int opt_flags                          /* OPT_LOCAL or OPT_GLOBAL */
@@ -5323,7 +5323,7 @@ static int expand_option_idx = -1;
 static char_u expand_option_name[5] = {'t', '_', NUL, NUL, NUL};
 static int expand_option_flags = 0;
 
-void 
+void
 set_context_in_set_cmd (
     expand_T *xp,
     char_u *arg,
@@ -5601,7 +5601,7 @@ void ExpandOldSetting(int *num_file, char_u ***file)
  * Get the value for the numeric or string option *opp in a nice format into
  * NameBuff[].  Must not be called with a hidden option!
  */
-static void 
+static void
 option_value2string (
     vimoption_T *opp,
     int opt_flags                          /* OPT_GLOBAL and/or OPT_LOCAL */
@@ -5658,7 +5658,7 @@ static int wc_use_keyname(char_u *varp, long *wcp)
  *
  * langmap_mapchar[] maps any of 256 chars to an ASCII char used for Vim
  * commands.
- * langmap_mapga.ga_data is a sorted table of langmap_entry_T. 
+ * langmap_mapga.ga_data is a sorted table of langmap_entry_T.
  * This does the same as langmap_mapchar[] for characters >= 256.
  */
 /*
@@ -6090,7 +6090,7 @@ static int check_opt_wim(void)
 
 /*
  * Check if backspacing over something is allowed.
- * The parameter what is one of the following: whatBS_INDENT, BS_EOL 
+ * The parameter what is one of the following: whatBS_INDENT, BS_EOL
  * or BS_START
  */
 bool can_bs(int what)
@@ -6137,7 +6137,7 @@ bool file_ff_differs(buf_T *buf, bool ignore_empty)
   if (ignore_empty
       && (buf->b_flags & BF_NEW)
       && buf->b_ml.ml_line_count == 1
-      && *ml_get_buf(buf, (linenr_T)1, FALSE) == NUL)
+      && *ml_get_buf(buf, (linenr_T)1, false) == NUL)
     return FALSE;
   if (buf->b_start_ffc != *buf->b_p_ff)
     return TRUE;

@@ -540,7 +540,7 @@ edit (
     /*
      * When emsg() was called msg_scroll will have been set.
      */
-    msg_scroll = FALSE;
+    msg_scroll = false;
 
 
     /* Open fold at the cursor line, according to 'foldopen'. */
@@ -3705,12 +3705,12 @@ static int ins_compl_get_exp(pos_T *ini)
                 && ini->lnum == pos->lnum
                 && ini->col  == pos->col)
           continue;
-        ptr = ml_get_buf(ins_buf, pos->lnum, FALSE) + pos->col;
+        ptr = ml_get_buf(ins_buf, pos->lnum, false) + pos->col;
         if (CTRL_X_MODE_LINE_OR_EVAL(l_ctrl_x_mode)) {
           if (compl_cont_status & CONT_ADDING) {
             if (pos->lnum >= ins_buf->b_ml.ml_line_count)
               continue;
-            ptr = ml_get_buf(ins_buf, pos->lnum + 1, FALSE);
+            ptr = ml_get_buf(ins_buf, pos->lnum + 1, false);
             if (!p_paste)
               ptr = skipwhite(ptr);
           }
@@ -3739,7 +3739,7 @@ static int ins_compl_get_exp(pos_T *ini)
                * compl_length, so the next STRNCPY always
                * works -- Acevedo */
               STRNCPY(IObuff, ptr, len);
-              ptr = ml_get_buf(ins_buf, pos->lnum + 1, FALSE);
+              ptr = ml_get_buf(ins_buf, pos->lnum + 1, false);
               tmp_ptr = ptr = skipwhite(ptr);
               /* Find start of next word. */
               tmp_ptr = find_word_start(tmp_ptr);
@@ -7344,7 +7344,7 @@ static int ins_bs(int c, int mode, int *inserted_space_p)
         if (has_format_option(FO_AUTO)
             && has_format_option(FO_WHITE_PAR)) {
           char_u  *ptr = ml_get_buf(curbuf, curwin->w_cursor.lnum,
-              TRUE);
+              true);
           int len;
 
           len = (int)STRLEN(ptr);
@@ -7624,7 +7624,7 @@ static void ins_mousescroll(int dir)
     did_scroll = TRUE;
   }
 
-  curwin->w_redr_status = TRUE;
+  curwin->w_redr_status = true;
 
   curwin = old_curwin;
   curbuf = curwin->w_buffer;

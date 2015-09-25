@@ -4585,7 +4585,7 @@ static void show_pat_in_path(char_u *line, int type, int did_show, int action, F
       msg_puts_attr(IObuff, hl_attr(HLF_N));
       MSG_PUTS(" ");
     }
-    msg_prt_line(line, FALSE);
+    msg_prt_line(line, false);
     ui_flush();                        /* show one line at a time */
 
     /* Definition continues until line that doesn't end with '\' */

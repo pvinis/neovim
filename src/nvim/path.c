@@ -982,7 +982,7 @@ static char_u *gettail_dir(char_u *fname)
  * result in "gap".
  * Returns the total number of matches.
  */
-static int 
+static int
 expand_in_path (
     garray_T *gap,
     char_u *pattern,
@@ -1206,7 +1206,7 @@ static int vim_backtick(char_u *p)
  * Currently only works when pat[] starts and ends with a `.
  * Returns number of file names found.
  */
-static int 
+static int
 expand_backtick (
     garray_T *gap,
     char_u *pat,
@@ -1262,7 +1262,7 @@ expand_backtick (
  * EW_NOTFOUND	add even when it doesn't exist
  * EW_ADDSLASH	add slash after directory name
  */
-void 
+void
 addfile (
     garray_T *gap,
     char_u *f,         /* filename */

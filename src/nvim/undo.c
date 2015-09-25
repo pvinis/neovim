@@ -993,10 +993,10 @@ static void unserialize_visualinfo(bufinfo_T *bi, visualinfo_T *info)
  * Otherwise use buf->b_ffname to generate the undo file name.
  * "buf" must never be null, buf->b_ffname is used to obtain the original file
  * permissions.
- * "forceit" is TRUE for ":wundo!", FALSE otherwise.
+ * "forceit" is true for ":wundo!", false otherwise.
  * "hash[UNDO_HASH_SIZE]" must be the hash value of the buffer text.
  */
-void u_write_undo(char_u *name, int forceit, buf_T *buf, char_u *hash)
+void u_write_undo(char_u *name, bool forceit, buf_T *buf, char_u *hash)
 {
   u_header_T  *uhp;
   char_u      *file_name;
@@ -2105,7 +2105,7 @@ static void u_undoredo(int undo)
         if (empty_buffer && lnum == 0)
           ml_replace((linenr_T)1, uep->ue_array[i], TRUE);
         else
-          ml_append(lnum, uep->ue_array[i], (colnr_T)0, FALSE);
+          ml_append(lnum, uep->ue_array[i], (colnr_T)0, false);
         xfree(uep->ue_array[i]);
       }
       xfree((char_u *)uep->ue_array);

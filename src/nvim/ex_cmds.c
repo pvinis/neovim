@@ -504,7 +504,7 @@ void ex_sort(exarg_T *eap)
     s = ml_get(nrs[eap->forceit ? count - i - 1 : i].lnum);
     if (!unique || i == 0
         || (sort_ic ? STRICMP(s, sortbuf1) : STRCMP(s, sortbuf1)) != 0) {
-      if (ml_append(lnum++, s, (colnr_T)0, FALSE) == FAIL)
+      if (ml_append(lnum++, s, (colnr_T)0, false) == FAIL)
         break;
       if (unique)
         STRCPY(sortbuf1, s);
@@ -697,7 +697,7 @@ int do_move(linenr_T line1, linenr_T line2, linenr_T dest)
     return FAIL;
   for (extra = 0, l = line1; l <= line2; l++) {
     str = vim_strsave(ml_get(l + extra));
-    ml_append(dest + l - line1, str, (colnr_T)0, FALSE);
+    ml_append(dest + l - line1, str, (colnr_T)0, false);
     xfree(str);
     if (dest < line1)
       extra++;
@@ -803,7 +803,7 @@ void ex_copy(linenr_T line1, linenr_T line2, linenr_T n)
     /* need to use vim_strsave() because the line will be unlocked within
      * ml_append() */
     p = vim_strsave(ml_get(line1));
-    ml_append(curwin->w_cursor.lnum, p, (colnr_T)0, FALSE);
+    ml_append(curwin->w_cursor.lnum, p, (colnr_T)0, false);
     xfree(p);
 
     /* situation 2: skip already copied lines */
@@ -837,7 +837,7 @@ void free_prev_shellcmd(void)
  * Bangs in the argument are replaced with the previously entered command.
  * Remember the argument.
  */
-void do_bang(int addr_count, exarg_T *eap, int forceit, int do_in, int do_out)
+void do_bang(int addr_count, exarg_T *eap, bool forceit, int do_in, int do_out)
 {
   char_u              *arg = eap->arg;          /* command */
   linenr_T line1 = eap->line1;                  /* start of range */
@@ -860,7 +860,7 @@ void do_bang(int addr_count, exarg_T *eap, int forceit, int do_in, int do_out)
     return;
 
   if (addr_count == 0) {                /* :! */
-    msg_scroll = FALSE;             /* don't scroll here */
+    msg_scroll = false;             /* don't scroll here */
     autowrite_all();
     msg_scroll = scroll_save;
   }
@@ -973,7 +973,7 @@ void do_bang(int addr_count, exarg_T *eap, int forceit, int do_in, int do_out)
  * We use input redirection if do_in is TRUE.
  * We use output redirection if do_out is TRUE.
  */
-static void 
+static void
 do_filter (
     linenr_T line1,
     linenr_T line2,
@@ -1205,7 +1205,7 @@ filterend:
  * Call a shell to execute a command.
  * When "cmd" is NULL start an interactive shell.
  */
-void 
+void
 do_shell (
     char_u *cmd,
     int flags              /* may be SHELL_DOOUT when output is redirected */
@@ -1303,7 +1303,7 @@ char_u *make_filter_cmd(char_u *cmd, char_u *itmp, char_u *otmp)
 #endif
 
   size_t len = STRLEN(cmd) + 1;  // At least enough space for cmd + NULL.
-  
+
   len += is_fish_shell ?  sizeof("begin; ""; end") - 1
                        :  sizeof("("")") - 1;
 
@@ -1422,7 +1422,7 @@ int viminfo_error(char *errnum, char *message, char_u *line)
  * read_viminfo() -- Read the viminfo file.  Registers etc. which are already
  * set are not over-written unless "flags" includes VIF_FORCEIT. -- webb
  */
-int 
+int
 read_viminfo (
     char_u *file,          /* file name or NULL to use default name */
     int flags                  /* VIF_WANT_INFO et al. */
@@ -1466,7 +1466,7 @@ read_viminfo (
  * If "forceit" is TRUE, then the old file is not read in, and only internal
  * info is written to the file.
  */
-void write_viminfo(char_u *file, int forceit)
+void write_viminfo(char_u *file, bool forceit)
 {
   char_u      *fname;
   FILE        *fp_in = NULL;    /* input viminfo file, if any */
@@ -1731,7 +1731,7 @@ static void do_viminfo(FILE *fp_in, FILE *fp_out, int flags)
  * first part of the viminfo file which contains everything but the marks that
  * are local to a file.  Returns TRUE when end-of-file is reached. -- webb
  */
-static int read_viminfo_up_to_marks(vir_T *virp, int forceit, int writing)
+static int read_viminfo_up_to_marks(vir_T *virp, bool forceit, int writing)
 {
   int eof;
 
@@ -2132,7 +2132,7 @@ int do_write(exarg_T *eap)
         if (vim_dialog_yesno(VIM_QUESTION, NULL,
                 (char_u *)_("Write partial file?"), 2) != VIM_YES)
           goto theend;
-        eap->forceit = TRUE;
+        eap->forceit = true;
       } else {
         EMSG(_("E140: Use ! to write partial buffer"));
         goto theend;
@@ -2216,7 +2216,7 @@ theend:
  * May set eap->forceit if a dialog says it's OK to overwrite.
  * Return OK if it's OK, FAIL if it is not.
  */
-int 
+int
 check_overwrite (
     exarg_T *eap,
     buf_T *buf,
@@ -2252,7 +2252,7 @@ check_overwrite (
         dialog_msg(buff, _("Overwrite existing file \"%s\"?"), fname);
         if (vim_dialog_yesno(VIM_QUESTION, NULL, buff, 2) != VIM_YES)
           return FAIL;
-        eap->forceit = TRUE;
+        eap->forceit = true;
       } else {
         EMSG(_(e_exists));
         return FAIL;
@@ -2292,7 +2292,7 @@ check_overwrite (
             xfree(swapname);
             return FAIL;
           }
-          eap->forceit = TRUE;
+          eap->forceit = true;
         } else {
           EMSG2(_("E768: Swap file exists: %s (:silent! overrides)"),
               swapname);
@@ -2386,10 +2386,10 @@ int not_writing(void)
 
 /*
  * Check if a buffer is read-only (either 'readonly' option is set or file is
- * read-only). Ask for overruling in a dialog. Return TRUE and give an error
+ * read-only). Ask for overruling in a dialog. Return true and give an error
  * message when the buffer is readonly.
  */
-static int check_readonly(int *forceit, buf_T *buf)
+static bool check_readonly(bool *forceit, buf_T *buf)
 {
   /* Handle a file being readonly when the 'readonly' option is set or when
    * the file exists and permissions are read-only. */
@@ -2412,19 +2412,19 @@ static int check_readonly(int *forceit, buf_T *buf)
 
       if (vim_dialog_yesno(VIM_QUESTION, NULL, buff, 2) == VIM_YES) {
         /* Set forceit, to force the writing of a readonly file */
-        *forceit = TRUE;
-        return FALSE;
+        *forceit = true;
+        return false;
       } else
-        return TRUE;
+        return true;
     } else if (buf->b_p_ro)
       EMSG(_(e_readonly));
     else
       EMSG2(_("E505: \"%s\" is read-only (add ! to override)"),
           buf->b_fname);
-    return TRUE;
+    return true;
   }
 
-  return FALSE;
+  return false;
 }
 
 /*
@@ -2435,7 +2435,7 @@ static int check_readonly(int *forceit, buf_T *buf)
  * -1 for successfully opening another file.
  * 'lnum' is the line number for the cursor in the new file (if non-zero).
  */
-int getfile(int fnum, char_u *ffname, char_u *sfname, int setpm, linenr_T lnum, int forceit)
+int getfile(int fnum, char_u *ffname, char_u *sfname, int setpm, linenr_T lnum, bool forceit)
 {
   int other;
   int retval;
@@ -2519,7 +2519,7 @@ theend:
  *
  * return FAIL for failure, OK otherwise
  */
-int 
+int
 do_ecmd (
     int fnum,
     char_u *ffname,
@@ -2724,7 +2724,7 @@ do_ecmd (
         /* close the link to the current buffer */
         u_sync(FALSE);
         close_buffer(oldwin, curbuf,
-            (flags & ECMD_HIDE) || curbuf->terminal ? 0 : DOBUF_UNLOAD, FALSE);
+            (flags & ECMD_HIDE) || curbuf->terminal ? 0 : DOBUF_UNLOAD, false);
 
         /* Autocommands may open a new window and leave oldwin open
          * which leads to crashes since the above call sets
@@ -2732,7 +2732,7 @@ do_ecmd (
         if (curwin != oldwin && oldwin != aucmd_win && win_valid(oldwin)) {
           assert(oldwin);
           if (oldwin->w_buffer == NULL) {
-            win_close(oldwin, FALSE);
+            win_close(oldwin, false);
           }
         }
 
@@ -2809,7 +2809,7 @@ do_ecmd (
   /* Since we are starting to edit a file, consider the filetype to be
    * unset.  Helps for when an autocommand changes files and expects syntax
    * highlighting to work in the other file. */
-  did_filetype = FALSE;
+  did_filetype = false;
 
   /*
    * other_file	oldbuf
@@ -2987,7 +2987,7 @@ do_ecmd (
   }
 
   /* Check if cursors in other windows on the same buffer are still valid */
-  check_lnums(FALSE);
+  check_lnums(false);
 
   /*
    * Did not read the file, need to show some info about the file.
@@ -2996,21 +2996,21 @@ do_ecmd (
   if (oldbuf
       && !auto_buf
       ) {
-    int msg_scroll_save = msg_scroll;
+    bool msg_scroll_save = msg_scroll;
 
     /* Obey the 'O' flag in 'cpoptions': overwrite any previous file
      * message. */
     if (shortmess(SHM_OVERALL) && !exiting && p_verbose == 0)
-      msg_scroll = FALSE;
+      msg_scroll = false;
     if (!msg_scroll)            /* wait a bit when overwriting an error msg */
       check_for_delay(FALSE);
     msg_start();
     msg_scroll = msg_scroll_save;
-    msg_scrolled_ign = TRUE;
+    msg_scrolled_ign = true;
 
     fileinfo(FALSE, TRUE, FALSE);
 
-    msg_scrolled_ign = FALSE;
+    msg_scrolled_ign = false;
   }
 
   if (command != NULL)
@@ -3087,7 +3087,7 @@ void ex_append(exarg_T *eap)
     State |= LANGMAP;
 
   for (;; ) {
-    msg_scroll = TRUE;
+    msg_scroll = true;
     need_wait_return = FALSE;
     if (curbuf->b_p_ai) {
       if (append_indent >= 0) {
@@ -3149,7 +3149,7 @@ void ex_append(exarg_T *eap)
       theline[0] = NUL;
 
     did_undo = TRUE;
-    ml_append(lnum, theline, (colnr_T)0, FALSE);
+    ml_append(lnum, theline, (colnr_T)0, false);
     appended_lines_mark(lnum, 1L);
 
     xfree(theline);
@@ -3883,7 +3883,7 @@ void do_sub(exarg_T *eap)
                 msg_didout = FALSE;                     /* avoid a scroll-up */
               msg_starthere();
               i = msg_scroll;
-              msg_scroll = 0;                           /* truncate msg when
+              msg_scroll = false;                           /* truncate msg when
                                                            needed */
               msg_no_more = TRUE;
               /* write message same highlighting as for
@@ -4086,7 +4086,7 @@ void do_sub(exarg_T *eap)
             if (u_inssub(lnum) == OK) {             /* prepare for undo */
               *p1 = NUL;                            /* truncate up to the CR */
               ml_append(lnum - 1, new_start,
-                  (colnr_T)(p1 - new_start + 1), FALSE);
+                  (colnr_T)(p1 - new_start + 1), false);
               mark_adjust(lnum + 1, (linenr_T)MAXLNUM, 1L, 0L);
               if (do_ask)
                 appended_lines(lnum - 1, 1L);
@@ -4724,7 +4724,7 @@ void ex_help(exarg_T *eap)
   if (empty_fnum != 0 && curbuf->b_fnum != empty_fnum) {
     buf = buflist_findnr(empty_fnum);
     if (buf != NULL && buf->b_nwindows == 0)
-      wipe_buffer(buf, TRUE);
+      wipe_buffer(buf, true);
   }
 
   /* keep the previous alternate file */
@@ -4764,7 +4764,7 @@ char_u *check_help_lang(char_u *arg)
  * Assumption is made that the matched_string passed has already been found to
  * match some string for which help is requested.  webb.
  */
-int 
+int
 help_heuristic (
     char_u *matched_string,
     int offset,                             /* offset for match */
@@ -5060,13 +5060,13 @@ void fix_help_buffer(void)
 
   if (!syntax_present(curwin)) {
     for (lnum = 1; lnum <= curbuf->b_ml.ml_line_count; ++lnum) {
-      line = ml_get_buf(curbuf, lnum, FALSE);
+      line = ml_get_buf(curbuf, lnum, false);
       len = (int)STRLEN(line);
       if (in_example && len > 0 && !ascii_iswhite(line[0])) {
         /* End of example: non-white or '<' in first column. */
         if (line[0] == '<') {
           /* blank-out a '<' in the first column */
-          line = ml_get_buf(curbuf, lnum, TRUE);
+          line = ml_get_buf(curbuf, lnum, true);
           line[0] = ' ';
         }
         in_example = FALSE;
@@ -5074,12 +5074,12 @@ void fix_help_buffer(void)
       if (!in_example && len > 0) {
         if (line[len - 1] == '>' && (len == 1 || line[len - 2] == ' ')) {
           /* blank-out a '>' in the last column (start of example) */
-          line = ml_get_buf(curbuf, lnum, TRUE);
+          line = ml_get_buf(curbuf, lnum, true);
           line[len - 1] = ' ';
           in_example = TRUE;
         } else if (line[len - 1] == '~') {
           /* blank-out a '~' at the end of line (header marker) */
-          line = ml_get_buf(curbuf, lnum, TRUE);
+          line = ml_get_buf(curbuf, lnum, true);
           line[len - 1] = ' ';
         }
       }
@@ -5099,7 +5099,7 @@ void fix_help_buffer(void)
           && fname[8] == NUL)
       ) {
     for (lnum = 1; lnum < curbuf->b_ml.ml_line_count; ++lnum) {
-      line = ml_get_buf(curbuf, lnum, FALSE);
+      line = ml_get_buf(curbuf, lnum, false);
       if (strstr((char *)line, "*local-additions*") == NULL)
         continue;
 
@@ -5223,7 +5223,7 @@ void fix_help_buffer(void)
                 }
                 convert_setup(&vc, NULL, NULL);
 
-                ml_append(lnum, cp, (colnr_T)0, FALSE);
+                ml_append(lnum, cp, (colnr_T)0, false);
                 if (cp != IObuff)
                   xfree(cp);
                 ++lnum;
@@ -5365,7 +5365,7 @@ void ex_helptags(exarg_T *eap)
   xfree(dirname);
 }
 
-static void 
+static void
 helptags_one (
     char_u *dir,               /* doc directory */
     char_u *ext,               /* suffix, ".txt", ".itx", ".frx", etc. */
@@ -5593,7 +5593,7 @@ void ex_helpclose(exarg_T *eap)
 {
   FOR_ALL_WINDOWS_IN_TAB(win, curtab) {
     if (win->w_buffer->b_help) {
-      win_close(win, FALSE);
+      win_close(win, false);
       return;
     }
   }

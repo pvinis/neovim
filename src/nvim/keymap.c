@@ -487,7 +487,7 @@ char_u *get_special_key_name(int c, int modifiers)
  * If there is a match, srcp is advanced to after the <> name.
  * dst[] must be big enough to hold the result (up to six characters)!
  */
-unsigned int 
+unsigned int
 trans_special (
     char_u **srcp,
     char_u *dst,
@@ -531,7 +531,7 @@ trans_special (
  * srcp is advanced to after the <> name.
  * returns 0 if there is no match.
  */
-int 
+int
 find_special_key (
     char_u **srcp,
     int *modp,
@@ -758,9 +758,9 @@ int get_mouse_button(int code, bool *is_click, bool *is_drag)
 char_u * replace_termcodes (
     char_u *from,
     char_u **bufp,
-    int from_part,
-    int do_lt,                     // also translate <lt>
-    int special                    // always accept <key> notation
+    bool from_part,
+    bool do_lt,					// also translate <lt>
+    bool special				// always accept <key> notation
 )
 {
   ssize_t i;

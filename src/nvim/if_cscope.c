@@ -178,7 +178,7 @@ void set_context_in_cscope_cmd(expand_T *xp, char_u *arg, cmdidx_T cmdidx)
  * Find the command, print help if invalid, and then call the corresponding
  * command function.
  */
-static void 
+static void
 do_cscope_general (
     exarg_T *eap,
     int make_split             /* whether to split window */
@@ -444,7 +444,7 @@ static void cs_stat_emsg(char *fname)
  * cs_add() and cs_reset().  i really don't like to do this, but this
  * routine uses a number of goto statements.
  */
-static int 
+static int
 cs_add_common (
     char *arg1,         /* filename - may contain environment variables */
     char *arg2,         /* prepend path - may contain environment variables */
@@ -928,7 +928,7 @@ static int cs_find(exarg_T *eap)
  *
  * common code for cscope find, shared by cs_find() and do_cstag()
  */
-static int cs_find_common(char *opt, char *pat, int forceit, int verbose,
+static int cs_find_common(char *opt, char *pat, bool forceit, int verbose,
                           int use_ll, char_u *cmdline)
 {
   char *cmd;

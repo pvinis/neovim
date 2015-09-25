@@ -212,7 +212,7 @@ msg_attr_keep (
 char_u *
 msg_strtrunc (
     char_u *s,
-    int force                  /* always truncate */
+    bool force                  /* always truncate */
 )
 {
   char_u      *buf = NULL;
@@ -620,11 +620,11 @@ int emsgu(char_u *s, uint64_t n)
 
 /*
  * Like msg(), but truncate to a single line if p_shm contains 't', or when
- * "force" is TRUE.  This truncates in another way as for normal messages.
+ * "force" is true.  This truncates in another way as for normal messages.
  * Careful: The string may be changed by msg_may_trunc()!
  * Returns a pointer to the printed message, if wait_return() not called.
  */
-char_u *msg_trunc_attr(char_u *s, int force, int attr)
+char_u *msg_trunc_attr(char_u *s, bool force, int attr)
 {
   int n;
 
@@ -1368,7 +1368,7 @@ void str2specialbuf(char_u *sp, char_u *buf, int len)
 /*
  * print line for :print or :list command
  */
-void msg_prt_line(char_u *s, int list)
+void msg_prt_line(char_u *s, bool list)
 {
   int c;
   int col = 0;
@@ -1382,7 +1382,7 @@ void msg_prt_line(char_u *s, int list)
   char_u buf[MB_MAXBYTES + 1];
 
   if (curwin->w_p_list)
-    list = TRUE;
+    list = true;
 
   /* find start of trailing whitespace */
   if (list && lcs_trail) {

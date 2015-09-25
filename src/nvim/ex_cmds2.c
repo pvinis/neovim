@@ -131,7 +131,7 @@ static int debug_greedy = FALSE;        /* batch mode debugging: don't save
  */
 void do_debug(char_u *cmd)
 {
-  int save_msg_scroll = msg_scroll;
+  bool save_msg_scroll = msg_scroll;
   int save_State = State;
   int save_did_emsg = did_emsg;
   int save_cmd_silent = cmd_silent;
@@ -178,7 +178,7 @@ void do_debug(char_u *cmd)
    * Repeat getting a command and executing it.
    */
   for (;; ) {
-    msg_scroll = TRUE;
+    msg_scroll = true;
     need_wait_return = FALSE;
     /* Save the current typeahead buffer and replace it with an empty one.
      * This makes sure we get input from the user here and don't interfere
@@ -426,7 +426,7 @@ static garray_T prof_ga = {0, 0, sizeof(struct debuggy), 4, NULL};
  * is allocated.
  * Returns FAIL for failure.
  */
-static int 
+static int
 dbg_parsearg (
     char_u *arg,
     garray_T *gap           /* either &dbg_breakp or &prof_ga */
@@ -650,7 +650,7 @@ void ex_breaklist(exarg_T *eap)
  * Find a breakpoint for a function or sourced file.
  * Returns line number at which to break; zero when no matching breakpoint.
  */
-linenr_T 
+linenr_T
 dbg_find_breakpoint (
     int file,                   /* TRUE for a file, FALSE for a function */
     char_u *fname,         /* file or function name */
@@ -663,11 +663,11 @@ dbg_find_breakpoint (
 /*
  * Return TRUE if profiling is on for a function or sourced file.
  */
-int 
+int
 has_profiling (
-    int file,                   /* TRUE for a file, FALSE for a function */
-    char_u *fname,         /* file or function name */
-    int *fp            /* return: forceit */
+    bool file,			/* true for a file, false for a function */
+    char_u *fname,		/* file or function name */
+    bool *fp			/* return: forceit */
 )
 {
   return debuggy_find(file, fname, (linenr_T)0, &prof_ga, fp)
@@ -677,13 +677,13 @@ has_profiling (
 /*
  * Common code for dbg_find_breakpoint() and has_profiling().
  */
-static linenr_T 
+static linenr_T
 debuggy_find (
     int file,                   /* TRUE for a file, FALSE for a function */
     char_u *fname,         /* file or function name */
     linenr_T after,             /* after this line number */
     garray_T *gap,           /* either &dbg_breakp or &prof_ga */
-    int *fp            /* if not NULL: return forceit */
+    bool *fp            /* if not NULL: return forceit */
 )
 {
   struct debuggy *bp;
@@ -1026,7 +1026,7 @@ int prof_def_func(void)
  *
  * return FAIL for failure, OK otherwise
  */
-int autowrite(buf_T *buf, int forceit)
+int autowrite(buf_T *buf, bool forceit)
 {
   int r;
 
@@ -1069,7 +1069,7 @@ void autowrite_all(void)
  */
 int check_changed(buf_T *buf, int flags)
 {
-  int forceit = (flags & CCGD_FORCEIT);
+  bool forceit = (flags & CCGD_FORCEIT);
 
   if (       !forceit
              && bufIsChanged(buf)
@@ -1108,7 +1108,7 @@ int check_changed(buf_T *buf, int flags)
  * Ask the user what to do when abandoning a changed buffer.
  * Must check 'write' option first!
  */
-void 
+void
 dialog_changed (
     buf_T *buf,
     int checkall                   /* may abandon all changed buffers */
@@ -1128,7 +1128,7 @@ dialog_changed (
 
   /* Init ea pseudo-structure, this is needed for the check_overwrite()
    * function. */
-  ea.append = ea.forceit = FALSE;
+  ea.append = ea.forceit = false;
 
   if (ret == VIM_YES) {
     if (buf->b_fname != NULL && check_overwrite(&ea, buf,
@@ -1171,7 +1171,7 @@ dialog_changed (
  * Return TRUE if the buffer "buf" can be abandoned, either by making it
  * hidden, autowriting it or unloading it.
  */
-int can_abandon(buf_T *buf, int forceit)
+int can_abandon(buf_T *buf, bool forceit)
 {
   return P_HID(buf)
          || !bufIsChanged(buf)
@@ -1199,7 +1199,7 @@ static void add_bufnum(int *bufnrs, int *bufnump, int nr)
  * Return TRUE if any buffer was changed and cannot be abandoned.
  * That changed buffer becomes the current buffer.
  */
-int 
+int
 check_changed_any (
     int hidden                     /* Only check hidden buffers */
 )
@@ -1327,7 +1327,7 @@ int check_fname(void)
  *
  * return FAIL for failure, OK otherwise
  */
-int buf_write_all(buf_T *buf, int forceit)
+int buf_write_all(buf_T *buf, bool forceit)
 {
   int retval;
   buf_T       *old_curbuf = curbuf;
@@ -1428,7 +1428,7 @@ int get_arglist_exp(char_u *str, int *fcountp, char_u ***fnamesp, bool wig)
  *
  * Return FAIL for failure, OK otherwise.
  */
-static int 
+static int
 do_arglist (
     char_u *str,
     int what,
@@ -2000,7 +2000,7 @@ void ex_listdo(exarg_T *eap)
  * Files[] itself is not taken over.
  * Returns index of first added argument.
  */
-static int 
+static int
 alist_add_list (
     int count,
     char_u **files,
@@ -2301,7 +2301,7 @@ static FILE *fopen_noinh_readbin(char *filename)
  *
  * return FAIL if file could not be opened, OK otherwise
  */
-int 
+int
 do_source (
     char_u *fname,
     int check_other,                    /* check for .vimrc and _vimrc */
@@ -2507,10 +2507,10 @@ do_source (
   }
 
   if (l_do_profiling == PROF_YES) {
-    int forceit;
+    bool forceit;
 
     /* Check if we do profiling for this script. */
-    if (!si->sn_prof_on && has_profiling(TRUE, si->sn_name, &forceit)) {
+    if (!si->sn_prof_on && has_profiling(true, si->sn_name, &forceit)) {
       script_do_profile(si);
       si->sn_pr_force = forceit;
     }

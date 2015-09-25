@@ -548,9 +548,9 @@ void ml_open_file(buf_T *buf)
  * If still need to create a swap file, and starting to edit a not-readonly
  * file, or reading into an existing buffer, create a swap file now.
  */
-void 
+void
 check_need_swap (
-    int newfile                    /* reading file into new buffer */
+    bool newfile                    /* reading file into new buffer */
 )
 {
   if (curbuf->b_may_swap && (!curbuf->b_p_ro || !newfile))
@@ -1041,7 +1041,7 @@ void ml_recover(void)
       }
       ++error;
       ml_append(lnum++, (char_u *)_("???MANY LINES MISSING"),
-          (colnr_T)0, TRUE);
+          (colnr_T)0, true);
     } else {          /* there is a block */
       pp = hp->bh_data;
       if (pp->pb_id == PTR_ID) {                /* it is a pointer block */
@@ -1052,13 +1052,13 @@ void ml_recover(void)
           if (line_count != 0) {
             ++error;
             ml_append(lnum++, (char_u *)_("???LINE COUNT WRONG"),
-                (colnr_T)0, TRUE);
+                (colnr_T)0, true);
           }
         }
 
         if (pp->pb_count == 0) {
           ml_append(lnum++, (char_u *)_("???EMPTY BLOCK"),
-              (colnr_T)0, TRUE);
+              (colnr_T)0, true);
           ++error;
         } else if (idx < (int)pp->pb_count) {         /* go a block deeper */
           if (pp->pb_pointer[idx].pe_bnum < 0) {
@@ -1079,7 +1079,7 @@ void ml_recover(void)
             if (cannot_open) {
               ++error;
               ml_append(lnum++, (char_u *)_("???LINES MISSING"),
-                  (colnr_T)0, TRUE);
+                  (colnr_T)0, true);
             }
             ++idx;                  /* get same block again for next index */
             continue;
@@ -1109,7 +1109,7 @@ void ml_recover(void)
           }
           ++error;
           ml_append(lnum++, (char_u *)_("???BLOCK MISSING"),
-              (colnr_T)0, TRUE);
+              (colnr_T)0, true);
         } else {
           /*
            * it is a data block
@@ -1123,7 +1123,7 @@ void ml_recover(void)
           if (page_count * mfp->mf_page_size != dp->db_txt_end) {
             ml_append(lnum++,
                 (char_u *)_("??? from here until ???END lines may be messed up"),
-                (colnr_T)0, TRUE);
+                (colnr_T)0, true);
             ++error;
             has_error = TRUE;
             dp->db_txt_end = page_count * mfp->mf_page_size;
@@ -1140,7 +1140,7 @@ void ml_recover(void)
             ml_append(lnum++,
                 (char_u *)_(
                     "??? from here until ???END lines may have been inserted/deleted"),
-                (colnr_T)0, TRUE);
+                (colnr_T)0, true);
             ++error;
             has_error = TRUE;
           }
@@ -1153,11 +1153,11 @@ void ml_recover(void)
               ++error;
             } else
               p = (char_u *)dp + txt_start;
-            ml_append(lnum++, p, (colnr_T)0, TRUE);
+            ml_append(lnum++, p, (colnr_T)0, true);
           }
           if (has_error)
             ml_append(lnum++, (char_u *)_("???END"),
-                (colnr_T)0, TRUE);
+                (colnr_T)0, true);
         }
       }
     }
@@ -1266,7 +1266,7 @@ theend:
  * - list the swap files when recovering
  * - find the name of the n'th swap file when recovering
  */
-int 
+int
 recover_names (
     char_u *fname,             /* base for swap file name */
     int list,                       /* when TRUE, list the swap file names */
@@ -1719,7 +1719,7 @@ theend:
  */
 char_u *ml_get(linenr_T lnum)
 {
-  return ml_get_buf(curbuf, lnum, FALSE);
+  return ml_get_buf(curbuf, lnum, false);
 }
 
 /*
@@ -1727,20 +1727,20 @@ char_u *ml_get(linenr_T lnum)
  */
 char_u *ml_get_pos(pos_T *pos)
 {
-  return ml_get_buf(curbuf, pos->lnum, FALSE) + pos->col;
+  return ml_get_buf(curbuf, pos->lnum, false) + pos->col;
 }
 
 /*
  * Return a pointer to a line in a specific buffer
  *
- * "will_change": if TRUE mark the buffer dirty (chars in the line will be
+ * "will_change": if true mark the buffer dirty (chars in the line will be
  * changed)
  */
 char_u *
 ml_get_buf (
     buf_T *buf,
     linenr_T lnum,
-    int will_change                        /* line will be changed */
+    bool will_change                        /* line will be changed */
 )
 {
   bhdr_T      *hp;
@@ -1826,12 +1826,12 @@ int ml_line_alloced(void)
  *
  * return FAIL for failure, OK otherwise
  */
-int 
+int
 ml_append (
     linenr_T lnum,                  /* append after this line (can be 0) */
     char_u *line,              /* text of the new line */
     colnr_T len,                    /* length of new line, including NUL, or 0 */
-    int newfile                    /* flag, see above */
+    bool newfile                    /* flag, see above */
 )
 {
   /* When starting up, we might still need to create the memfile */
@@ -1840,14 +1840,14 @@ ml_append (
 
   if (curbuf->b_ml.ml_line_lnum != 0)
     ml_flush_line(curbuf);
-  return ml_append_int(curbuf, lnum, line, len, newfile, FALSE);
+  return ml_append_int(curbuf, lnum, line, len, newfile, false);
 }
 
 /*
  * Like ml_append() but for an arbitrary buffer.  The buffer must already have
  * a memline.
  */
-int 
+int
 ml_append_buf (
     buf_T *buf,
     linenr_T lnum,                  /* append after this line (can be 0) */
@@ -1864,7 +1864,7 @@ ml_append_buf (
   return ml_append_int(buf, lnum, line, len, newfile, FALSE);
 }
 
-static int 
+static int
 ml_append_int (
     buf_T *buf,
     linenr_T lnum,                  /* append after this line (can be 0) */
@@ -3139,7 +3139,7 @@ get_file_in_dir (
 /*
  * Print the ATTENTION message: info about an existing swap file.
  */
-static void 
+static void
 attention_message (
     buf_T *buf,           /* buffer being edited */
     char_u *fname         /* swap file name */

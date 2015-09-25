@@ -6080,7 +6080,7 @@ static void *getroom(spellinfo_T *spin, size_t len, bool align)
   sblock_T    *bl = spin->si_blocks;
 
   assert(len <= SBLOCKSIZE);
-  
+
   if (align && bl != NULL)
     // Round size up for alignment.  On some systems structures need to be
     // aligned to the size of a pointer (e.g., SPARC).
@@ -8397,7 +8397,7 @@ void spell_suggest(int count)
   int limit;
   int selected = count;
   int badlen = 0;
-  int msg_scroll_save = msg_scroll;
+  bool msg_scroll_save = msg_scroll;
 
   if (no_spell_checking(curwin))
     return;
@@ -8489,7 +8489,7 @@ void spell_suggest(int count)
     msg_clr_eos();
     msg_putchar('\n');
 
-    msg_scroll = TRUE;
+    msg_scroll = true;
     for (int i = 0; i < sug.su_ga.ga_len; ++i) {
       stp = &SUG(sug.su_ga, i);
 
@@ -12987,7 +12987,7 @@ spell_dump_compl (
   if (do_region && region_names != NULL) {
     if (pat == NULL) {
       vim_snprintf((char *)IObuff, IOSIZE, "/regions=%s", region_names);
-      ml_append(lnum++, IObuff, (colnr_T)0, FALSE);
+      ml_append(lnum++, IObuff, (colnr_T)0, false);
     }
   } else
     do_region = false;
@@ -13001,7 +13001,7 @@ spell_dump_compl (
 
     if (pat == NULL) {
       vim_snprintf((char *)IObuff, IOSIZE, "# file: %s", slang->sl_fname);
-      ml_append(lnum++, IObuff, (colnr_T)0, FALSE);
+      ml_append(lnum++, IObuff, (colnr_T)0, false);
     }
 
     // When matching with a pattern and there are no prefixes only use
@@ -13155,7 +13155,7 @@ static void dump_word(slang_T *slang, char_u *word, char_u *pat, int *dir, int d
       }
     }
 
-    ml_append(lnum, p, (colnr_T)0, FALSE);
+    ml_append(lnum, p, (colnr_T)0, false);
   } else if (((dumpflags & DUMPFLAG_ICASE)
               ? mb_strnicmp(p, pat, STRLEN(pat)) == 0
               : STRNCMP(p, pat, STRLEN(pat)) == 0)
@@ -13333,4 +13333,3 @@ int expand_spelling(linenr_T lnum, char_u *pat, char_u ***matchp)
   *matchp = ga.ga_data;
   return ga.ga_len;
 }
-

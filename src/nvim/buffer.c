@@ -90,7 +90,7 @@ static char *e_auabort = N_("E855: Autocommands caused command to abort");
  * memory.
  * Return FAIL for failure, OK otherwise.
  */
-int 
+int
 open_buffer (
     int read_stdin,                     /* read file from stdin */
     exarg_T *eap,                   /* for forced 'ff' and 'fenc' or NULL */
@@ -115,7 +115,7 @@ open_buffer (
      * There MUST be a memfile, otherwise we can't do anything
      * If we can't create one for the current buffer, take another buffer
      */
-    close_buffer(NULL, curbuf, 0, FALSE);
+    close_buffer(NULL, curbuf, 0, false);
 
     curbuf = NULL;
     FOR_ALL_BUFFERS(buf) {
@@ -143,7 +143,7 @@ open_buffer (
   /* The autocommands in readfile() may change the buffer, but only AFTER
    * reading the file. */
   old_curbuf = curbuf;
-  modified_was_set = FALSE;
+  modified_was_set = false;
 
   /* mark cursor position as being invalid */
   curwin->w_valid = 0;
@@ -294,12 +294,12 @@ int buf_valid(buf_T *buf)
  * cause there to be only one window with this buffer.  e.g. when ":quit" is
  * supposed to close the window but autocommands close all other windows.
  */
-void 
+void
 close_buffer (
     win_T *win,               /* if not NULL, set b_last_cursor */
     buf_T *buf,
     int action,
-    int abort_if_last
+    bool abort_if_last
 )
 {
   bool unload_buf = (action != 0);
@@ -392,7 +392,7 @@ close_buffer (
 
   if (buf->terminal) {
     terminal_close(buf->terminal, NULL);
-  } 
+  }
 
   /* Always remove the buffer when there is no file name. */
   if (buf->b_ffname == NULL)
@@ -568,7 +568,7 @@ static void free_buffer(buf_T *buf)
 /*
  * Free stuff in the buffer for ":bdel" and when wiping out the buffer.
  */
-static void 
+static void
 free_buffer_stuff (
     buf_T *buf,
     int free_options                       /* free options as well */
@@ -625,7 +625,7 @@ void goto_buffer(exarg_T *eap, int start, int dir, int count)
     enter_cleanup(&cs);
 
     /* Quitting means closing the split window, nothing else. */
-    win_close(curwin, TRUE);
+    win_close(curwin, true);
     swap_exists_action = SEA_NONE;
     swap_exists_did_quit = TRUE;
 
@@ -656,7 +656,7 @@ void handle_swap_exists(buf_T *old_curbuf)
      * open a new, empty buffer. */
     swap_exists_action = SEA_NONE;      /* don't want it again */
     swap_exists_did_quit = TRUE;
-    close_buffer(curwin, curbuf, DOBUF_UNLOAD, FALSE);
+    close_buffer(curwin, curbuf, DOBUF_UNLOAD, false);
     if (!buf_valid(old_curbuf) || old_curbuf == curbuf)
       old_curbuf = buflist_new(NULL, NULL, 1L, BLN_CURBUF | BLN_LISTED);
     if (old_curbuf != NULL) {
@@ -675,7 +675,7 @@ void handle_swap_exists(buf_T *old_curbuf)
     enter_cleanup(&cs);
 
     /* User selected Recover at ATTENTION prompt. */
-    msg_scroll = TRUE;
+    msg_scroll = true;
     ml_recover();
     MSG_PUTS("\n");     /* don't overwrite the last message */
     cmdline_row = msg_row;
@@ -708,7 +708,7 @@ do_bufdel (
     int addr_count,
     int start_bnr,                  /* first buffer number in a range */
     int end_bnr,                    /* buffer nr or last buffer nr in a range */
-    int forceit
+    bool forceit
 )
 {
   int do_current = 0;           /* delete current buffer? */
@@ -803,7 +803,7 @@ do_bufdel (
  * Make the current buffer empty.
  * Used when it is wiped out and it's the last buffer.
  */
-static int empty_curbuf(int close_others, int forceit, int action)
+static int empty_curbuf(int close_others, bool forceit, int action)
 {
   int retval;
   buf_T   *buf = curbuf;
@@ -828,7 +828,7 @@ static int empty_curbuf(int close_others, int forceit, int action)
    * if the buffer still exists.
    */
   if (buf != curbuf && buf_valid(buf) && buf->b_nwindows == 0)
-    close_buffer(NULL, buf, action, FALSE);
+    close_buffer(NULL, buf, action, false);
   if (!close_others)
     need_fileinfo = FALSE;
   return retval;
@@ -849,13 +849,13 @@ static int empty_curbuf(int close_others, int forceit, int action)
  *
  * Return FAIL or OK.
  */
-int 
+int
 do_buffer (
     int action,
     int start,
     int dir,                        /* FORWARD or BACKWARD */
     int count,                      /* buffer number or number of buffers */
-    int forceit                    /* TRUE for :...! */
+    bool forceit					/* true for :...! */
 )
 {
   buf_T       *buf;
@@ -982,7 +982,7 @@ do_buffer (
     while (buf == curbuf
            && !(curwin->w_closing || curwin->w_buffer->b_closing)
            && (firstwin != lastwin || first_tabpage->tp_next != NULL)) {
-      if (win_close(curwin, FALSE) == FAIL)
+      if (win_close(curwin, false) == FAIL)
         break;
     }
 
@@ -992,7 +992,7 @@ do_buffer (
     if (buf != curbuf) {
       close_windows(buf, FALSE);
       if (buf != curbuf && buf_valid(buf) && buf->b_nwindows <= 0)
-        close_buffer(NULL, buf, action, FALSE);
+        close_buffer(NULL, buf, action, false);
       return OK;
     }
 
@@ -1181,7 +1181,7 @@ void set_curbuf(buf_T *buf, int action)
           unload ? action : (action == DOBUF_GOTO
                              && !P_HID(prevbuf)
                              && !bufIsChanged(
-                                 prevbuf)) ? DOBUF_UNLOAD : 0, FALSE);
+                                 prevbuf)) ? DOBUF_UNLOAD : 0, false);
       if (curwin != previouswin && win_valid(previouswin))
         /* autocommands changed curwin, Grr! */
         curwin = previouswin;
@@ -1242,7 +1242,7 @@ void enter_buffer(buf_T *buf)
      * ":ball" used in an autocommand.  If there already is a filetype we
      * might prefer to keep it. */
     if (*curbuf->b_p_ft == NUL)
-      did_filetype = FALSE;
+      did_filetype = false;
 
     open_buffer(FALSE, NULL, 0);
   } else {
@@ -1556,7 +1556,7 @@ void free_buf_options(buf_T *buf, int free_p_ff)
  *
  * return FAIL for failure, OK for success
  */
-int buflist_getfile(int n, linenr_T lnum, int options, int forceit)
+int buflist_getfile(int n, linenr_T lnum, int options, bool forceit)
 {
   buf_T       *buf;
   win_T       *wp = NULL;
@@ -1710,7 +1710,7 @@ static buf_T *buflist_findname_file_id(char_u *ffname, FileID *file_id,
  * Return fnum of the found buffer.
  * Return < 0 for error.
  */
-int 
+int
 buflist_findpat (
     char_u *pattern,
     char_u *pattern_end,       /* pointer to first char after pattern */
@@ -2202,7 +2202,7 @@ int buflist_name_nr(int fnum, char_u **fname, linenr_T *lnum)
  * Returns FAIL for failure (file name already in use by other buffer)
  *	OK otherwise.
  */
-int 
+int
 setfname (
     buf_T *buf,
     char_u *ffname,
@@ -2242,7 +2242,7 @@ setfname (
         return FAIL;
       }
       /* delete from the list */
-      close_buffer(NULL, obuf, DOBUF_WIPE, FALSE);
+      close_buffer(NULL, obuf, DOBUF_WIPE, false);
     }
     sfname = vim_strsave(sfname);
 #ifdef USE_FNAME_CASE
@@ -2456,7 +2456,7 @@ static bool buf_same_file_id(buf_T *buf, FileID *file_id)
 /*
  * Print info about the current buffer.
  */
-void 
+void
 fileinfo (
     int fullname,               /* when non-zero print full path */
     int shorthelp,
@@ -2540,7 +2540,7 @@ fileinfo (
      * First call msg_start() to get the message in the right place. */
     msg_start();
     n = msg_scroll;
-    msg_scroll = TRUE;
+    msg_scroll = true;
     msg(buffer);
     msg_scroll = n;
   } else {
@@ -2785,7 +2785,7 @@ void free_titles(void)
  * If maxwidth is not zero, the string will be filled at any middle marker
  * or truncated if too long, fillchar is used for all whitespace.
  */
-int 
+int
 build_stl_str_hl (
     win_T *wp,
     char_u *out,               /* buffer to write into != NameBuff */
@@ -3536,7 +3536,7 @@ void get_rel_pos(win_T *wp, char_u *buf, int buflen)
  * Append (file 2 of 8) to "buf[buflen]", if editing more than one file.
  * Return TRUE if it was appended.
  */
-static int 
+static int
 append_arg_number (
     win_T *wp,
     char_u *buf,
@@ -3608,10 +3608,10 @@ char_u *alist_name(aentry_T *aep)
 /*
  * do_arg_all(): Open up to 'count' windows, one for each argument.
  */
-void 
+void
 do_arg_all (
     int count,
-    int forceit,                    /* hide buffers in current windows */
+    bool forceit,                    /* hide buffers in current windows */
     int keep_tabs                  /* keep current tabs, for ":tab drop file" */
 )
 {
@@ -3892,7 +3892,7 @@ void ex_buffer_all(exarg_T *eap)
            ) && firstwin != lastwin
           && !(wp->w_closing || wp->w_buffer->b_closing)
           ) {
-        win_close(wp, FALSE);
+        win_close(wp, false);
         wpnext = firstwin;              /* just in case an autocommand does
                                            something strange with windows */
         tpnext = first_tabpage;         /* start all over...*/
@@ -3962,7 +3962,7 @@ void ex_buffer_all(exarg_T *eap)
         enter_cleanup(&cs);
 
         /* User selected Quit at ATTENTION prompt; close this window. */
-        win_close(curwin, TRUE);
+        win_close(curwin, true);
         --open_wins;
         swap_exists_action = SEA_NONE;
         swap_exists_did_quit = TRUE;
@@ -4029,7 +4029,7 @@ void do_modelines(int flags)
   int nmlines;
   static int entered = 0;
 
-  if (!curbuf->b_p_ml || (nmlines = (int)p_mls) == 0)
+  if (!curbuf->b_p_ml || (nmlines = p_mls) == 0)
     return;
 
   /* Disallow recursive entry here.  Can happen when executing a modeline
@@ -4054,7 +4054,7 @@ void do_modelines(int flags)
  * chk_modeline() - check a single line for a mode string
  * Return FAIL if an error encountered.
  */
-static int 
+static int
 chk_modeline (
     linenr_T lnum,
     int flags                      /* Same as for do_modelines(). */
@@ -4625,7 +4625,7 @@ int buf_contents_changed(buf_T *buf)
   aucmd_restbuf(&aco);
 
   if (curbuf != newbuf)         /* safety check */
-    wipe_buffer(newbuf, FALSE);
+    wipe_buffer(newbuf, false);
 
   return differ;
 }
@@ -4635,10 +4635,10 @@ int buf_contents_changed(buf_T *buf)
  * this buffer.  Call this to wipe out a temp buffer that does not contain any
  * marks.
  */
-void 
+void
 wipe_buffer (
     buf_T *buf,
-    int aucmd                   /* When TRUE trigger autocommands. */
+    bool aucmd                   /* When TRUE trigger autocommands. */
 )
 {
   if (buf->b_fnum == top_file_num - 1)
@@ -4646,7 +4646,7 @@ wipe_buffer (
 
   if (!aucmd)               /* Don't trigger BufDelete autocommands here. */
     block_autocmds();
-  close_buffer(NULL, buf, DOBUF_WIPE, FALSE);
+  close_buffer(NULL, buf, DOBUF_WIPE, false);
   if (!aucmd)
     unblock_autocmds();
 }

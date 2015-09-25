@@ -371,7 +371,7 @@ void pum_redraw(void)
 
                 if (size < pum_width) {
                   // Most left character requires 2-cells but only 1 cell
-                  // is available on screen.  Put a '<' on the left of the 
+                  // is available on screen.  Put a '<' on the left of the
                   // pum item
                   *(--rt) = '<';
                   size++;
@@ -584,11 +584,11 @@ static int pum_set_selected(int n, int repeat)
           for (p = pum_array[pum_selected].pum_info; *p != NUL;) {
             e = vim_strchr(p, '\n');
             if (e == NULL) {
-              ml_append(lnum++, p, 0, FALSE);
+              ml_append(lnum++, p, 0, false);
               break;
             } else {
               *e = NUL;
-              ml_append(lnum++, p, (int)(e - p + 1), FALSE);
+              ml_append(lnum++, p, (int)(e - p + 1), false);
               *e = '\n';
               p = e + 1;
             }
@@ -617,7 +617,7 @@ static int pum_set_selected(int n, int repeat)
             // window is not resized, skip the preview window's
             // status line redrawing.
             if (ins_compl_active() && !resized) {
-              curwin->w_redr_status = FALSE;
+              curwin->w_redr_status = false;
             }
 
             // Return cursor to where we were
